@@ -1,0 +1,34 @@
+schema_version: "1.0"
+project: bonsai.r2v
+purpose: local_full_text_rag
+papers:
+  - id: saber-2025
+    title: "Scaling Zero-Shot Reference-to-Video Generation"
+    arxiv_id: "2512.06905"
+    url: "https://arxiv.org/abs/2512.06905"
+    pdf_url: "https://arxiv.org/pdf/2512.06905"
+    method: Saber
+    local_pdf: "data/papers/2512.06905.pdf"
+    status: pending_download
+  - id: refalign-2026
+    title: "RefAlign: Representation Alignment for Reference-to-Video Generation"
+    arxiv_id: "2603.25743"
+    url: "https://arxiv.org/abs/2603.25743"
+    pdf_url: "https://arxiv.org/pdf/2603.25743"
+    method: RefAlign
+    local_pdf: "data/papers/2603.25743.pdf"
+    status: pending_download
+  - id: omnivbench-2026
+    title: "OmniVBench: A Benchmark and Large-Scale Dataset for Omni Reference-to-Video Generation"
+    arxiv_id: "2609.22069"
+    url: "https://arxiv.org/abs/2609.22069"
+    pdf_url: "https://arxiv.org/pdf/2609.22069"
+    method: OmniVBench
+    local_pdf: "data/papers/2609.22069.pdf"
+    status: pending_download
+policy:
+  download_mode: explicit_opt_in
+  commit_pdf_files: false
+  commit_extracted_full_text: false
+  preserve_page_citations: true
+  verify_current_source_license_before_redistribution: true
