@@ -1,0 +1,328 @@
+ontology:
+  id: bonsai.r2v
+  name: Reference-to-Video Research Ontology
+  version: 0.1.0
+  language: en
+  description: >
+    A lightweight ontology for organizing research on reference-conditioned
+    video generation, its methods, datasets, evaluation, and implementations.
+  scope:
+    includes:
+      - reference-to-video generation
+      - identity and subject consistency
+      - reference conditioning and text controllability
+      - training data and learning methods
+      - benchmarks and evaluation
+      - reproducibility and implementation tracking
+    excludes:
+      - assuming all meanings of R2V refer to reference-to-video
+      - treating unverified paper claims as established facts
+
+concepts:
+  ResearchProject:
+    description: A project or repository that coordinates research artifacts.
+    properties:
+      id: string
+      name: string
+      repository_url: uri
+      scope: string
+      status: enum
+    relations:
+      - has_artifact
+      - investigates
+
+  Paper:
+    description: A scholarly publication or preprint.
+    properties:
+      id: string
+      title: string
+      authors: list[string]
+      publication_date: date
+      venue: string
+      doi: string
+      arxiv_id: string
+      paper_url: uri
+      status: enum
+    relations:
+      - proposes
+      - evaluates
+      - uses_dataset
+      - compares_with
+      - implemented_by
+
+  Method:
+    description: A model, training method, architecture, or algorithm.
+    properties:
+      id: string
+      name: string
+      method_type: enum
+      summary: string
+      inference_overhead: string
+      code_url: uri
+      license: string
+    relations:
+      - conditions_on
+      - preserves
+      - controls
+      - trained_with
+      - evaluated_by
+
+  Reference:
+    description: Input information used to condition generated video.
+    properties:
+      id: string
+      modality: enum
+      semantic_role: enum
+      source_uri: uri
+    relations:
+      - conditions
+      - specifies_factor
+
+  Video:
+    description: A generated or ground-truth video sequence.
+    properties:
+      id: string
+      source_type: enum
+      duration_seconds: number
+      resolution: string
+    relations:
+      - generated_by
+      - evaluated_by
+      - depicts
+
+  ControlFactor:
+    description: A factor that a generation system is asked to preserve or control.
+    properties:
+      id: string
+      name: enum
+      description: string
+    allowed_values:
+      name:
+        - identity
+        - appearance
+        - motion
+        - style
+        - structure
+        - composition
+        - narrative
+        - subject_binding
+        - text_instruction
+
+  Dataset:
+    description: A collection used for training, validation, or evaluation.
+    properties:
+      id: string
+      name: string
+      purpose: enum
+      size_description: string
+      license: string
+      url: uri
+    relations:
+      - contains
+      - supports_task
+      - used_by
+
+  Benchmark:
+    description: A defined evaluation suite or protocol.
+    properties:
+      id: string
+      name: string
+      tasks: list[string]
+      metrics: list[string]
+      protocol_url: uri
+    relations:
+      - evaluates
+      - uses_dataset
+      - measures
+
+  Metric:
+    description: A quantitative or human-judged evaluation measure.
+    properties:
+      id: string
+      name: string
+      target: string
+      direction: enum
+      limitations: string
+    relations:
+      - measures
+
+  Implementation:
+    description: A codebase or runnable model implementation.
+    properties:
+      id: string
+      repository_url: uri
+      framework: string
+      license: string
+      hardware_requirements: string
+      reproducibility_status: enum
+    relations:
+      - implements
+      - reproduces
+      - depends_on
+
+  FailureMode:
+    description: A known or suspected failure during generation or evaluation.
+    properties:
+      id: string
+      name: enum
+      description: string
+      severity: enum
+    allowed_values:
+      name:
+        - identity_drift
+        - subject_confusion
+        - copy_paste_artifact
+        - prompt_noncompliance
+        - motion_inconsistency
+        - reference_factor_leakage
+        - evaluation_mismatch
+
+  Claim:
+    description: A research statement linked to evidence and confidence.
+    properties:
+      id: string
+      statement: string
+      evidence_url: uri
+      evidence_location: string
+      confidence: enum
+      verification_status: enum
+    allowed_values:
+      confidence:
+        - low
+        - medium
+        - high
+      verification_status:
+        - unverified
+        - partially_verified
+        - verified
+        - contradicted
+    relations:
+      - supported_by
+      - contradicts
+
+relations:
+  has_artifact:
+    domain: ResearchProject
+    range: [Paper, Dataset, Benchmark, Implementation, Claim]
+  investigates:
+    domain: ResearchProject
+    range: [Method, ControlFactor, FailureMode]
+  proposes:
+    domain: Paper
+    range: Method
+  evaluates:
+    domain: [Paper, Benchmark]
+    range: [Method, Video, Implementation]
+  uses_dataset:
+    domain: [Paper, Benchmark, Method]
+    range: Dataset
+  compares_with:
+    domain: Paper
+    range: Paper
+  implemented_by:
+    domain: Paper
+    range: Implementation
+  conditions_on:
+    domain: Method
+    range: Reference
+  preserves:
+    domain: Method
+    range: ControlFactor
+  controls:
+    domain: Method
+    range: ControlFactor
+  trained_with:
+    domain: Method
+    range: Dataset
+  evaluated_by:
+    domain: [Method, Video, Implementation]
+    range: Benchmark
+  specifies_factor:
+    domain: Reference
+    range: ControlFactor
+  conditions:
+    domain: Reference
+    range: Video
+  generated_by:
+    domain: Video
+    range: Method
+  depicts:
+    domain: Video
+    range: ControlFactor
+  contains:
+    domain: Dataset
+    range: [Reference, Video]
+  supports_task:
+    domain: Dataset
+    range: Benchmark
+  used_by:
+    domain: Dataset
+    range: [Method, Benchmark]
+  measures:
+    domain: Metric
+    range: ControlFactor
+  implements:
+    domain: Implementation
+    range: Method
+  reproduces:
+    domain: Implementation
+    range: Paper
+  depends_on:
+    domain: Implementation
+    range: Implementation
+  supported_by:
+    domain: Claim
+    range: [Paper, Dataset, Benchmark, Implementation]
+  contradicts:
+    domain: Claim
+    range: Claim
+
+research_records:
+  - id: paper.saber
+    type: Paper
+    title: Scaling Zero-Shot Reference-to-Video Generation
+    arxiv_id: "2512.06905"
+    paper_url: https://arxiv.org/abs/2512.06905
+    method:
+      id: method.saber
+      name: Saber
+      method_type: training_framework
+    research_focus:
+      - data_scaling
+      - zero_shot_reference_conditioning
+      - identity_consistency
+    verification_status: needs_full_text_review
+
+  - id: paper.refalign
+    type: Paper
+    title: "RefAlign: Representation Alignment for Reference-to-Video Generation"
+    arxiv_id: "2603.25743"
+    paper_url: https://arxiv.org/abs/2603.25743
+    research_focus:
+      - representation_alignment
+      - identity_consistency
+      - text_controllability
+    verification_status: needs_full_text_review
+
+  - id: paper.omnivbench
+    type: Paper
+    title: "OmniVBench: A Benchmark and Large-Scale Dataset for Omni Reference-to-Video Generation"
+    arxiv_id: "2609.22069"
+    paper_url: https://arxiv.org/abs/2609.22069
+    research_focus:
+      - benchmark_design
+      - multi_reference_control
+      - factor_grounded_evaluation
+    verification_status: needs_full_text_review
+
+governance:
+  evidence_policy:
+    - Separate paper claims from independently verified findings.
+    - Link every claim to a source and, where possible, a page or section.
+    - Do not infer implementation availability or license from a paper alone.
+    - Mark unverified metadata explicitly.
+  extension_policy:
+    - Use stable machine-readable IDs.
+    - Keep ontology concepts separate from individual research records.
+    - Add new control factors only when supported by research needs.
+    - Keep project-specific implementation details out of core concept definitions.
