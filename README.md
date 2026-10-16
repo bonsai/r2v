@@ -63,3 +63,16 @@ Research notes for Reference-to-Video (R2V) generation: generating a video that 
 - Zhou et al., *Scaling Zero-Shot Reference-to-Video Generation*, arXiv:2512.06905.
 - Wang et al., *RefAlign: Representation Alignment for Reference-to-Video Generation*, arXiv:2603.25743.
 - Li et al., *OmniVBench: A Benchmark and Large-Scale Dataset for Omni Reference-to-Video Generation*, arXiv:2609.22069.
+
+
+## Full-text paper RAG
+
+A local-first retrieval pipeline for the three papers is available in [`rag/`](rag/README.md).
+
+```bash
+pip install -r rag/requirements.txt
+python rag/r2v_rag.py ingest --download
+python rag/r2v_rag.py ask "How do the papers handle identity consistency?"
+```
+
+The PDFs, extracted chunks, and SQLite index stay local and are excluded from Git. Retrieval returns source paper, arXiv URL, and PDF page for every chunk. See [the RAG README](rag/README.md) for optional LLM generation and licensing notes.
