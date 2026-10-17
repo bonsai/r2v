@@ -1,0 +1,166 @@
+schema_version: "1.0"
+id: ai-anime-production-system
+title: "AIアニメ映画制作システム"
+status: hypothesis
+thesis: "生成をお呪いから科学へ、錬金術から工場へ"
+domain: animated_feature_film
+
+hypothesis:
+  statement: >-
+    棒人間で動作を明示し、YAMLで制作仕様を構造化し、LoRAでキャラクターや画風を専門化し、
+    MLアダプターで制御を追加し、JEVで評価結果を生成工程へ戻すことで、
+    品質・再現性・制作効率を改善できる可能性がある。
+  status: unverified
+  experimental_principle: "各要素の寄与を段階的な比較実験で分離して測定する"
+
+layers:
+  - id: reference
+    purpose: "制作対象の正本と参照コンテクスト"
+    inputs: [ideas, scripts, screenplay, character_design, worldbuilding, stick_figure, storyboard, yaml_spec]
+    formats:
+      text: [ideas, scripts, screenplay, code]
+      yaml: [canon, scene_spec, generation_config, evaluation_rubric]
+      png: [rough_sketch, photo, generated_image, pose_reference]
+      html: [character_sheet, review_page]
+      svg: [storyboard, four_panel_comic, architecture_diagram]
+      rag: [chunk_index, retrieval_database]
+    rules:
+      - "構造化データを正本とする"
+      - "RAGは検索用であり正本の代替にしない"
+      - "メディア本体とメタデータを分離する"
+      - "参照資料の出典・版・用途を記録する"
+
+  - id: generation
+    purpose: "仕様と参照に基づく再現可能な候補生成"
+    controls:
+      - id: stick_figure
+        role: "ポーズ・重心・位置・動作の大枠を明示する"
+      - id: yaml_spec
+        role: "シーン、時間、画角、キャラクター、制約を構造化する"
+      - id: lora
+        role: "キャラクターや画風などの特徴を専門化する"
+      - id: ml_adapter
+        role: "ポーズ・輪郭・深度・動作などの条件制御を補助する"
+    run_record:
+      - model_and_version
+      - adapter_and_lora_versions
+      - prompt_and_parameters
+      - seed_when_available
+      - reference_versions
+      - run_timestamp
+      - compute_cost
+      - candidate_asset_uri
+    rules:
+      - "LoRAとMLアダプターを同一概念として扱わない"
+      - "候補と採用済み素材を区別する"
+      - "利用した制御方式と参照版を記録する"
+
+  - id: eval_jev
+    purpose: "命題・証拠・基準に基づく評価と判断"
+    concepts:
+      proposition: "検証可能な主張または合格条件"
+      evidence: "参照素材、生成結果、測定値などの判断根拠"
+      rubric: "評価軸と判定ルール"
+      score: "基準に沿った測定値"
+      confidence: "判断の確からしさ"
+    verdicts: [pass, revise, reject, needs_human_review]
+    checks:
+      - pose_match
+      - character_consistency
+      - style_consistency
+      - composition_and_intent
+      - visual_artifacts
+      - temporal_continuity
+      - shot_continuity
+      - audio_quality
+      - delivery_compliance
+    outputs: [evaluation_record, verdict, failure_category, revision_route]
+    rules:
+      - "判定に根拠と評価基準を紐付ける"
+      - "不確実な判定は人間レビューへ送る"
+      - "JEV自体の精度を人間評価と照合する"
+
+  - id: production_tps_gate
+    purpose: "工程制御、品質保証、手戻りと無駄の削減"
+    gates:
+      - id: A
+        name: spec_reference_readiness
+      - id: B
+        name: asset_inspection
+      - id: C
+        name: shot_continuity_and_timing
+      - id: D
+        name: final_delivery_inspection
+    principles: [flow, quality_at_source, stop_and_fix, traceability, waste_reduction]
+    failure_policy: "失敗原因に応じて該当工程へ戻し、全件の無差別な再生成を避ける"
+
+pipeline:
+  - planning_and_worldbuilding
+  - screenplay
+  - character_and_art_design
+  - stick_figure_and_storyboard
+  - shot_generation
+  - eval_jev
+  - editing_and_compositing
+  - audio_and_music
+  - final_qc
+  - delivery
+
+experiment:
+  baseline: "A: 通常生成"
+  conditions:
+    - id: A
+      name: baseline
+      additions: []
+    - id: B
+      name: structured_spec
+      additions: [yaml_spec]
+    - id: C
+      name: motion_control
+      additions: [yaml_spec, stick_figure_pose_control]
+    - id: D
+      name: character_specialization
+      additions: [yaml_spec, stick_figure_pose_control, character_lora]
+    - id: E
+      name: evaluation_feedback_loop
+      additions: [yaml_spec, stick_figure_pose_control, character_lora, ml_adapter, jev_feedback]
+  controls:
+    - "同一シーンと同一評価基準を用いる"
+    - "可能な範囲で生成条件を揃える"
+    - "各条件を複数回試行する"
+    - "JEVの評価を人間の抜き取り評価と照合する"
+  metrics:
+    - pose_match_rate
+    - character_consistency_rate
+    - temporal_continuity_score
+    - first_pass_yield
+    - rework_rate
+    - cost_per_accepted_shot
+
+kpis:
+  - id: first_pass_yield
+    definition: "初回評価で合格した素材数 / 初回評価した素材数"
+  - id: final_yield
+    definition: "最終採用素材数 / 制作対象素材数"
+  - id: rework_rate
+    definition: "修正が発生した素材数 / 評価対象素材数"
+  - id: cost_per_accepted_shot
+    definition: "生成費と修正工数の合計 / 合格ショット数"
+  - id: canon_consistency_rate
+    definition: "正本と矛盾しない評価済み要素数 / 評価済み要素数"
+
+revision_routing:
+  canon_mismatch: reference
+  pose_or_motion_mismatch: stick_figure_and_storyboard
+  generation_artifact: generation
+  character_identity_issue: character_lora_or_reference
+  unclear_acceptance_criteria: eval_jev
+  continuity_issue: storyboard_or_editing
+  delivery_issue: final_qc
+
+principles:
+  - "Referenceが何を作るかを定義する"
+  - "Generationが候補を作る"
+  - "JEV/Evalが根拠に基づき判断する"
+  - "TPS/Gateが工程の流れを管理する"
+  - "各層を疎結合にし、モデル交換で正本と評価基準を失わない"
