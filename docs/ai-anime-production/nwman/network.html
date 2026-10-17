@@ -1,0 +1,9 @@
+<!doctype html>
+<html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>nwman — LAN-only production network</title><style>
+body{font:16px/1.65 system-ui,sans-serif;margin:0;background:#f8fafc;color:#172033}main{max-width:1050px;margin:auto;padding:2rem 1rem 4rem}h1{line-height:1.2}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:1rem}section{background:white;border:1px solid #cbd5e1;border-radius:12px;padding:1rem}code{background:#e2e8f0;padding:.1rem .3rem}a{color:#075985}.notice{border-left:4px solid #b45309;padding-left:1rem}</style></head><body><main>
+<p>NETWORK DESIGN / PRIVATE LAN</p><h1>nwman — LAN-only AI anime production network</h1><p><strong>LAN内のみ。</strong>制作端末、生成ワーカー、JEV評価、素材保管を内部ネットワークに閉じ込め、将来のKubernetes移行に備えてサービス境界を分離する。</p>
+<p class="notice">この資料は論理設計であり、実機のIPアドレスや稼働済み構成ではない。最初のPoCにKubernetesは不要。</p>
+<div class="grid"><section><h2>Studio</h2><p>制作端末、レビューUI、管理端末。内部APIを通してジョブを投入する。</p></section><section><h2>Control plane</h2><p>内部DNS、Job API、キュー、認証・権限、ログ・メトリクス。</p></section><section><h2>Worker plane</h2><p>R2V生成、JEV評価、後処理。通常の生成ワーカーはインターネットへ接続しない。</p></section><section><h2>Data plane</h2><p>参照原本、生成候補、採用素材、メタデータ、実験ログ、RAG/SQLiteを分離して保存。</p></section></div>
+<h2>ネットワーク原則</h2><ul><li>公開インターネットからの着信は拒否。</li><li>外向き通信は既定拒否。モデルやデータセットは管理端末から許可リスト経由で取得。</li><li>取得時に出典、ライセンス、チェックサムを記録。</li><li>サービス間はAPI／キューを介し、最小権限と監査ログを適用。</li><li>Kubernetes移行時はNamespace、Service、Job、PVC、NetworkPolicy、RBACへ対応づける。</li></ul>
+<h2>図・正本</h2><ul><li><a href="./network.svg">SVG network graph</a></li><li><a href="./network.mmd">Mermaid</a></li><li><a href="./network.puml">PlantUML</a></li><li><a href="./network.yaml">Canonical YAML</a></li></ul>
+</main></body></html>
