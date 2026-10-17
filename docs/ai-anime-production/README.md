@@ -55,3 +55,10 @@
 - [論文構成案](./paper-outline.md)
 - [課題画像・ショット選定と実証データ計画](./dataset-and-evidence-plan.md)
 - [Kaggle実験プロトコル](./kaggle-experiment-protocol.md)
+
+
+## LaTeX研究計画・サーベイ
+
+- [論文企画書（LaTeX）](./paper-proposal.tex)
+- [参考文献データベース（BibTeX）](./references.bib)
+- [文献サーベイ・構成要素除外の設計](./survey-and-ablation.md)
