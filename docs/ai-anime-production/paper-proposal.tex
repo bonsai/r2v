@@ -1,0 +1,150 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage[margin=25mm]{geometry}
+\usepackage{booktabs,tabularx,array}
+\usepackage{amsmath,amssymb}
+\usepackage{hyperref}
+\usepackage{enumitem}
+\usepackage{url}
+\title{生成映像制作における構成要素の限界貢献と費用対効果\\
+\large Software Factory・R2V・TPSに基づくアブレーション研究計画}
+\author{Research proposal --- bonsai/r2v}
+\date{\today}
+\begin{document}
+\maketitle
+
+\begin{abstract}
+本研究は、Reference-to-Video (R2V) による映像制作へ、構造化仕様（YAML）、棒人間・ポーズ制御、LoRA、制御アダプター、JEV型の根拠付き評価、Toyota Production System (TPS) に着想を得た品質ゲートを導入する際、どの構成要素が品質改善に寄与し、どの要素が追加コストに見合わないかを検証する。Software Factoryの考え方を制作工程に適用し、Kaggle等で再現可能な実験を行う。目的は全要素の導入を正当化することではなく、寄与の小さい要素を除外し、最小コストで必要品質を満たす構成を特定することである。現段階では研究計画であり、改善効果や企業一般の課題を実証済みとは主張しない。
+\end{abstract}
+
+\section{研究背景}
+生成映像は、単一クリップの視覚的品質に加えて、人物・衣装・物体の同一性、動作の明瞭さ、時間的一貫性、指示への適合を同時に満たす必要がある。既存の評価研究は、動画品質を複数の次元に分解し、自動指標と人間の判断の関係を調べている \cite{huang2024vbench,liu2024evalcrafter,han2025videobench,podstawski2025fcb}。長尺の物語生成では、キャラクターや場面の一貫性も重要な研究課題として整理されている \cite{elmoghany2025longvid}。
+
+本研究の焦点は、新しい動画生成モデル自体を提案することではなく、既存の生成能力を制作工程に組み込み、品質、再現性、手戻り、計算費用を管理する方法にある。ソフトウェアファクトリの仕様・テスト・履歴管理と、TPS型の品質ゲート・異常検知・原因工程へのフィードバックを、生成映像の実験系として検討する。
+
+\section{企業の課題仮説}
+制作現場で問題になり得る項目を、検証対象となる仮説として定義する。
+\begin{itemize}[nosep]
+\item キャラクターの外見や衣装がショット間で変化する。
+\item 指定したポーズ・動作・画角が生成結果に反映されない。
+\item 不合格ショットの再生成・手修正が多く、採用ショットあたりの費用が読みにくい。
+\item 生成条件や採用理由が記録されず、成功例を再現できない。
+\item レビュー工程が遅く、失敗の原因が仕様・参照・生成・評価のどこにあるか特定しづらい。
+\end{itemize}
+これらは企業全体に共通する事実として断言しない。公開事例・既存調査・実務者インタビュー・PoCで確認し、確認できなかった課題は研究動機から除外または限定する。
+
+\section{研究目的と研究質問}
+\begin{description}[style=nextline,leftmargin=0pt]
+\item[RQ1] YAML仕様化は、生成条件の再現性と指示適合を改善するか。
+\item[RQ2] 棒人間／ポーズ制御は、動作一致を改善し、追加コストに見合うか。
+\item[RQ3] LoRAと制御アダプターは、キャラクター一貫性・動作制御に独立した限界寄与を持つか。
+\item[RQ4] JEV型評価と修正ループは、初回合格率を高め、手戻りを減らすか。
+\item[RQ5] TPS型品質ゲートは、最終品質を維持しながら採用ショットあたりコストを減らすか。
+\item[RQ6] どの要素を除外しても品質目標を維持できるか。どの構成が費用対効果の面で最小か。
+\end{description}
+
+\section{提案システム}
+構成要素を次のように役割分離する。
+\begin{description}[style=nextline,leftmargin=0pt]
+\item[Reference] 参照画像、キャラクター仕様、権利・出典情報、シーン意図を管理する。
+\item[Generation] R2Vモデル、プロンプト、seed、LoRA、制御アダプター、実行パラメータを記録する。
+\item[Specification] YAMLでショットの意図、必須条件、禁止条件、参照、評価基準を構造化する。
+\item[Eval / JEV] 命題、証拠、ルーブリック、判定、信頼度、失敗分類を記録する。自動評価器の判定は人間評価と照合する。
+\item[Production System / TPS] 品質ゲート、異常検出、原因工程への差し戻し、手戻りと待ち時間の計測を行う。
+\item[Experiment tracking] Kaggle Notebook等でデータ版、モデル版、条件、ログ、費用、評価結果を再集計可能にする。
+\end{description}
+
+\section{サーベイの方針}
+サーベイは、単なる関連研究の列挙ではなく、実験変数と評価指標を決めるために行う。主要な調査軸は以下の通り。
+\begin{enumerate}[nosep]
+\item \textbf{動画生成評価：} VBenchは複数の品質次元を分離した評価スイートを提案する \cite{huang2024vbench}。EvalCrafterは生成動画の評価ベンチマークを扱う \cite{liu2024evalcrafter}。Video-Benchは人間評価との整合を重視する \cite{han2025videobench}。
+\item \textbf{被写体・顔の一貫性：} Face Consistency Benchmarkは、生成動画における顔の一貫性を測定する枠組みを扱う \cite{podstawski2025fcb}。Subject-to-Videoの評価では、被写体の同一性や自然さに焦点を当てるベンチマークも報告されている \cite{yuan2025opens2v}。
+\item \textbf{長尺・物語生成：} 長尺映像の構成、一貫性、映像品質を整理したサーベイを参照し、短いPoCの結果を長編映画全体へ過剰一般化しない \cite{elmoghany2025longvid}。
+\item \textbf{制御と計算効率：} ControlNeXtは動画・画像生成の制御を効率化する設計を検討している \cite{peng2024controlnext}。本研究では特定方式の優位性を前提とせず、制御品質と実行コストを測定する。
+\item \textbf{製造・ソフトウェア工程：} TPSおよびSoftware Factoryの文献は、品質ゲート、流れ、手戻り、工程間の責任分界を設計するために調査する。製造業の知見が生成映像制作へそのまま移植できるとは仮定せず、適用可能性を実験対象とする。
+\end{enumerate}
+各論文について、課題、データセット、比較条件、指標、人間評価の有無、計算コスト、再現可能性、ライセンスをサーベイ表に記録する。引用文献の主張は原論文本文で確認し、検索結果の要約だけを根拠に新規性を主張しない。
+
+\section{実験設計：貢献しない要素を見抜く}
+\subsection{基本比較}
+\begin{center}
+\small
+\begin{tabularx}{\linewidth}{lX}
+\toprule
+条件 & 構成 \\
+\midrule
+A & R2Vベースライン \\
+B & A + YAMLによる仕様・実行条件の記録 \\
+C & B + 棒人間／ポーズ制御 \\
+D & C + LoRA \\
+E & C + 制御アダプター（LoRAとは分離） \\
+F & 最も効果のある制御構成 + JEV評価・修正ループ \\
+G & F + TPS型ゲート \\
+\bottomrule
+\end{tabularx}
+\end{center}
+全条件を最初から実行するのではなく、各段階で品質・コスト・実行可能性を確認する。LoRAと制御アダプターの相互作用が疑われる場合に限り、後段で要因計画を追加する。
+
+\subsection{アブレーションと除外試験}
+各要素 $i$ の限界寄与を、基準構成から当該要素だけを除いた条件との差で推定する。
+\[
+\Delta Q_i = Q(\text{full}) - Q(\text{full}\setminus i)
+\]
+\[
+\Delta C_i = C(\text{full}) - C(\text{full}\setminus i)
+\]
+ここで $Q$ は事前に定義した品質指標、$C$ は採用ショットあたりの総費用（推論、学習・調整、評価、再生成、レビュー工数を含む）である。要素の導入による費用対効果は、品質改善を追加費用で割った値として補助的に報告する。ただし、品質指標が異なる尺度を持つ場合は、単純な比率だけで判断しない。
+
+\[
+\mathrm{CostPerAcceptedShot} =
+\frac{\mathrm{GenerationCost}+\mathrm{TrainingCost}+\mathrm{EvaluationCost}+\mathrm{HumanReviewCost}}
+{\mathrm{NumberOfAcceptedShots}}
+\]
+\[
+\mathrm{FirstPassYield} =
+\frac{\mathrm{FirstPassAcceptedShots}}{\mathrm{AllAttemptedShots}}
+\]
+要素を一つずつ追加する比較と、最終構成から一つずつ外す比較を併用する。前者は導入効果、後者は冗長性を検討する。複数要素の相互作用がある場合、単独比較だけでは結論を出さない。
+
+\subsection{除外判断ルール}
+\begin{itemize}[nosep]
+\item \textbf{Keep：} 主要品質指標を実務上意味のある幅で改善し、その効果が反復試行でも確認され、追加コストを正当化できる。
+\item \textbf{Drop：} 品質改善が事前に定めた最小実用効果を下回り、費用・時間・複雑さだけが増える。
+\item \textbf{Conditional：} 特定カテゴリ（例：複雑な動作、複数人物）だけで効果がある。対象タスクに限定して使う。
+\item \textbf{Inconclusive：} 試行数不足、評価者間の不一致、信頼区間の広さなどで結論できない。貢献なしと断定せず、追加データまたは実験の縮小を検討する。
+\end{itemize}
+統計的に有意でないことだけを理由に無効と断定しない。効果量、信頼区間、実用上の閾値、コストを併せて判断する。
+
+\section{課題ショットとデータ選定}
+課題は、(i) キャラクター同一性、(ii) ポーズ・動作、(iii) 構図・カメラ、(iv) 画風、(v) 時間的一貫性、(vi) 複数参照の結び付け、(vii) 遮蔽や交差動作などの難例に層別する。成功例だけを選ばず、失敗しやすいケースも含める。参照素材の出典、ライセンス、取得日、利用可能範囲を記録し、学習・調整用と最終評価用を分離する。
+
+\section{Kaggle実験運用とコスト管理}
+Kaggleは必須の実行基盤ではなく、Notebook、データ、実験ログを管理する候補環境と位置づける。まず少数の課題で環境確認（GPU・メモリ・推論時間・依存関係・ライセンス）を行い、ベースラインを成立させる。その後、情報量の高い比較を優先して条件を追加する。無条件の総当たりは避ける。
+各実行について、モデル版、データ版、YAML版、プロンプト、seed（使用可能な場合）、パラメータ、実行時間、GPU時間、失敗理由、出力URI、評価結果を保存する。計算量が大きい学習は、推論時の制御実験で寄与が見込めた場合に限って着手する。
+
+\section{評価指標}
+\begin{itemize}[nosep]
+\item 動作／ポーズ一致、キャラクター一貫性、時間的一貫性、指示適合、画質。
+\item JEVと人間評価の一致度、評価者間一致度。
+\item 初回合格率、手戻り率、再生成回数、レビュー時間、採用ショットあたり総費用。
+\item 再現性：同一仕様・同一条件から得られる結果の変動。
+\end{itemize}
+主要指標と実用上の最小改善幅は実験前に固定する。自動評価器は誤判定や偏りを持ち得るため、人間の盲検評価を一部に用いる。結果を見てから課題を都合よく除外しない。
+
+\section{実施計画}
+\begin{enumerate}[nosep]
+\item 文献サーベイと企業課題仮説の確認。
+\item 課題ショット、ライセンス、ルーブリック、主要指標の事前固定。
+\item ベースラインと実験ログの実装。
+\item YAML、ポーズ制御、LoRA、アダプターの段階的アブレーション。
+\item JEVと人間評価の照合、TPSゲートの前後比較。
+\item 結果・費用・失敗例の集計と再現確認。
+\item 論文執筆。未測定値を埋めず、限界と否定的結果も報告する。
+\end{enumerate}
+
+\section{期待される貢献と限界}
+期待する貢献は、(1) 生成映像制作の工程・仕様・評価を結ぶ再現可能な実験設計、(2) 品質改善と総費用を同時に測る構成要素別の寄与分析、(3) 寄与が乏しい構成要素を除外するための判断基準、(4) JEV評価と人間判断の一致度の検証である。実験前に、品質向上、コスト削減、企業への一般化、新規性を確定的に主張しない。
+
+\section{参考文献}
+\bibliographystyle{plain}
+\bibliography{references}
+\end{document}
