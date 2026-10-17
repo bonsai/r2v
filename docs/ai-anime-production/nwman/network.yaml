@@ -1,0 +1,78 @@
+schema_version: "1.0"
+id: nwman-lan-topology
+title: "LAN-only AI anime production network"
+status: design
+scope:
+  network: lan_only
+  public_ingress: false
+  default_worker_egress: deny
+  kubernetes: future_compatible_not_required_for_poc
+zones:
+  - id: studio
+    trust: trusted_clients
+    components: [editor_workstations, review_ui, admin_workstation]
+  - id: control
+    trust: restricted_internal
+    components: [internal_dns, job_api, job_queue, auth_rbac, logs_metrics]
+  - id: workers
+    trust: isolated_compute
+    components: [r2v_generation_workers, jev_evaluation_workers, media_postprocess]
+  - id: data
+    trust: restricted_storage
+    components: [object_storage, metadata_db, experiment_log, rag_sqlite]
+  - id: egress
+    trust: tightly_controlled
+    components: [approved_download_gateway]
+components:
+  job_api:
+    exposure: lan_only
+    auth_required: true
+    responsibilities: [submit_job, inspect_status, retrieve_results]
+  job_queue:
+    exposure: internal_only
+    responsibilities: [dispatch_jobs, retry_policy, dead_letter]
+  r2v_generation_workers:
+    exposure: internal_only
+    internet_egress: deny_by_default
+    read: [approved_references, scene_spec]
+    write: [generated_candidates, run_logs]
+  jev_evaluation_workers:
+    exposure: internal_only
+    read: [reference_assets, generated_candidates, evaluation_rubrics]
+    write: [evaluation_records, verdicts, failure_categories]
+  object_storage:
+    namespaces: [references_readonly, candidates, accepted_assets, rejected_assets]
+  metadata_db:
+    stores: [asset_metadata, model_versions, run_parameters, cost_records, evaluation_records]
+network_policies:
+  - id: no_public_ingress
+    rule: "deny all inbound from public internet"
+  - id: default_deny_worker_egress
+    rule: "workers may not access the public internet by default"
+  - id: controlled_model_dataset_download
+    rule: "only admin-initiated allowlisted downloads via egress gateway"
+  - id: least_privilege_data_access
+    rule: "each service receives only required namespaces and operations"
+  - id: audit_sensitive_operations
+    rule: "record model/data imports, accepted-asset promotion, permission changes"
+kubernetes_mapping:
+  namespaces: [studio, control, workers, data, observability]
+  workload_types:
+    job_api: Deployment
+    job_queue: Deployment
+    r2v_generation_workers: Job
+    jev_evaluation_workers: Job
+    media_postprocess: Job
+    metadata_db: StatefulSet_or_external_service
+    object_storage: StatefulSet_or_external_service
+  primitives:
+    service_discovery: Service_and_internal_DNS
+    persistent_data: PVC_or_external_storage
+    network_isolation: NetworkPolicy
+    access_control: RBAC_and_ServiceAccount
+    secrets: Secret_manager_not_Git
+  migration_rule: "Keep service contracts stable; do not introduce Kubernetes until operational need justifies it."
+non_goals:
+  - "No public-facing production API"
+  - "No mandatory cloud dependency"
+  - "No Kubernetes requirement for the first PoC"
