@@ -1,0 +1,55 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="760" viewBox="0 0 1200 760" role="img" aria-labelledby="title desc">
+<title id="title">AIアニメ映画制作システム</title>
+<desc id="desc">棒人間、YAML、LoRA、MLアダプター、JEV、TPS Gateを接続した生成・評価ループ。</desc>
+<defs>
+ <marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto"><path d="M0,0 L0,6 L9,3 z" fill="#334155"/></marker>
+ <style>
+ .title{font:700 27px sans-serif;fill:#0f172a}.head{font:700 18px sans-serif;fill:#0f172a}.body{font:14px sans-serif;fill:#1e293b}.small{font:12px sans-serif;fill:#334155}
+ .node{stroke:#334155;stroke-width:2;rx:15}.arrow{stroke:#334155;stroke-width:2.5;fill:none;marker-end:url(#arrow)}.back{stroke:#b45309;stroke-width:2.5;stroke-dasharray:8 6;fill:none;marker-end:url(#arrow)}
+ </style>
+</defs>
+<rect width="1200" height="760" fill="#fff"/>
+<text x="42" y="48" class="title">AIアニメ映画制作システム</text>
+<text x="42" y="77" class="body">棒人間 × YAML × JEV × LoRA × MLアダプター</text>
+<rect x="40" y="120" width="250" height="200" class="node" fill="#e0f2fe"/>
+<text x="62" y="154" class="head">1. REFERENCE</text>
+<text x="62" y="184" class="body">脚本・キャラクター・世界観</text>
+<text x="62" y="211" class="body">YAML仕様・絵コンテ</text>
+<text x="62" y="245" class="small">正本 / canon</text>
+<text x="62" y="267" class="small">RAGは検索用</text>
+<text x="62" y="289" class="small">素材とメタデータを分離</text>
+<rect x="335" y="120" width="250" height="200" class="node" fill="#dcfce7"/>
+<text x="357" y="154" class="head">2. MOTION + GENERATION</text>
+<text x="357" y="184" class="body">棒人間：ポーズ・重心・時間</text>
+<text x="357" y="211" class="body">LoRA：キャラ・画風の専門化</text>
+<text x="357" y="238" class="body">ML Adapter：条件制御</text>
+<text x="357" y="272" class="small">モデル・条件・参照版・seed</text>
+<text x="357" y="292" class="small">候補と実行記録を保存</text>
+<rect x="630" y="120" width="250" height="200" class="node" fill="#fef3c7"/>
+<text x="652" y="154" class="head">3. EVAL / JEV</text>
+<text x="652" y="184" class="body">命題・証拠・評価基準</text>
+<text x="652" y="211" class="body">スコア・確信度・判定</text>
+<text x="652" y="245" class="body">PASS / REVISE / REJECT</text>
+<text x="652" y="277" class="small">不確実なら人間レビュー</text>
+<rect x="925" y="120" width="235" height="200" class="node" fill="#f3e8ff"/>
+<text x="947" y="154" class="head">4. TPS / GATE</text>
+<text x="947" y="184" class="body">A：仕様・参照準備</text>
+<text x="947" y="211" class="body">B：素材検査</text>
+<text x="947" y="238" class="body">C：ショット連続性</text>
+<text x="947" y="265" class="body">D：納品検査</text>
+<text x="947" y="292" class="small">合格品だけ次工程へ</text>
+<path d="M290 220 H329" class="arrow"/><path d="M585 220 H624" class="arrow"/><path d="M880 220 H919" class="arrow"/>
+<rect x="925" y="390" width="235" height="86" class="node" fill="#f0fdf4" stroke="#166534"/>
+<text x="1042" y="423" text-anchor="middle" class="head">完成作品</text><text x="1042" y="450" text-anchor="middle" class="body">Gate A–D 通過</text>
+<path d="M1042 320 V384" class="arrow"/>
+<rect x="335" y="390" width="545" height="86" class="node" fill="#fffbeb" stroke="#b45309"/>
+<text x="607" y="423" text-anchor="middle" class="head">JEVの結果を生成へ戻す</text>
+<text x="607" y="450" text-anchor="middle" class="body">失敗原因を分類し、該当工程だけ修正する</text>
+<path d="M755 320 V352 H607 V384" class="back"/>
+<path d="M335 433 H165 V326" class="back"/>
+<text x="42" y="540" class="head">検証仮説（未検証）</text>
+<text x="42" y="570" class="body">棒人間で動作を明示し、YAMLで仕様を固定し、LoRA／アダプターで制御し、JEVで改善ループを作る。</text>
+<text x="42" y="598" class="body">比較条件：通常生成 → YAML → 棒人間 → LoRA → JEVフィードバック。</text>
+<text x="42" y="626" class="body">指標：ポーズ一致・キャラ一貫性・時間的連続性・初回合格率・手戻り率・合格ショット単価。</text>
+<text x="42" y="675" class="small">原則：正本を守る。生成条件を記録する。根拠付きで判定する。合格品を流し、原因工程を直す。</text>
+</svg>
