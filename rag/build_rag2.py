@@ -43,7 +43,7 @@ def main():
       );
       CREATE TABLE chunks(
         id INTEGER PRIMARY KEY, document_id TEXT NOT NULL, chunk_index INTEGER NOT NULL,
-        text TEXT NOT NULL, UNIQUE(document_id, chunk_index),
+        title TEXT NOT NULL, text TEXT NOT NULL, UNIQUE(document_id, chunk_index),
         FOREIGN KEY(document_id) REFERENCES documents(id)
       );
       CREATE VIRTUAL TABLE chunks_fts USING fts5(
@@ -67,7 +67,7 @@ def main():
             "Verification: " + paper.get("verification", ""),
             "URL: " + paper.get("url", "")])
         for i, chunk in enumerate(split_text(text)):
-            conn.execute("INSERT INTO chunks(document_id,chunk_index,text) VALUES(?,?,?)", (doc_id,i,chunk))
+            conn.execute("INSERT INTO chunks(document_id,chunk_index,title,text) VALUES(?,?,?,?)", (doc_id,i,paper["title"],chunk))
     for path in sorted(DOC_ROOT.rglob("*")):
         if not path.is_file() or path.suffix.lower() not in {".md", ".yaml", ".yml", ".tex", ".mmd", ".puml"}:
             continue
@@ -83,7 +83,7 @@ def main():
             doc_id, path.stem.replace("-", " "), rel, "project_document",
             json.dumps({"path": rel, "suffix": path.suffix}, ensure_ascii=False)))
         for i, chunk in enumerate(split_text(content)):
-            conn.execute("INSERT INTO chunks(document_id,chunk_index,text) VALUES(?,?,?)", (doc_id,i,chunk))
+            conn.execute("INSERT INTO chunks(document_id,chunk_index,title,text) VALUES(?,?,?,?)", (doc_id,i,path.stem.replace("-", " "),chunk))
     info = {
         "schema_version": "1.0",
         "built_at": datetime.now(timezone.utc).isoformat(timespec="seconds"),
