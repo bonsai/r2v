@@ -128,3 +128,10 @@ The combined architecture is a research hypothesis, not a proven result. The pla
 - [Paper outline](docs/ai-anime-production/paper-outline.md)
 - [Task image/shot selection and evidence plan](docs/ai-anime-production/dataset-and-evidence-plan.md)
 - [Kaggle experiment protocol](docs/ai-anime-production/kaggle-experiment-protocol.md)
+
+
+### LaTeX proposal and survey
+
+- [Research proposal (LaTeX)](docs/ai-anime-production/paper-proposal.tex)
+- [BibTeX references](docs/ai-anime-production/references.bib)
+- [Survey and ablation plan](docs/ai-anime-production/survey-and-ablation.md)
