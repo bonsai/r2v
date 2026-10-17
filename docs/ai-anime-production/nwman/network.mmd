@@ -1,0 +1,53 @@
+flowchart TB
+  subgraph LAN["LAN / private network only"]
+    subgraph STUDIO["Studio VLAN / trusted clients"]
+      EDITOR["制作端末"]
+      REVIEW["レビューUI"]
+      ADMIN["管理端末"]
+    end
+    subgraph CONTROL["Control plane"]
+      DNS["Internal DNS"]
+      API["Internal Job API"]
+      QUEUE["Job Queue"]
+      AUTH["Auth / RBAC"]
+      OBS["Logs / Metrics"]
+    end
+    subgraph WORKERS["Worker plane"]
+      R2V["R2V generation workers"]
+      JEV["JEV evaluation workers"]
+      POST["Image / video post-process"]
+    end
+    subgraph DATA["Data plane"]
+      OBJ[("Object storage: refs / candidates / accepted")]
+      DB[("Metadata DB / experiment log")]
+      RAG[("RAG / SQLite index")]
+    end
+    EDITOR --> API
+    REVIEW --> API
+    ADMIN --> AUTH
+    API --> AUTH
+    API --> QUEUE
+    QUEUE --> R2V
+    QUEUE --> JEV
+    R2V --> OBJ
+    R2V --> DB
+    JEV --> DB
+    JEV --> QUEUE
+    POST --> OBJ
+    POST --> DB
+    API --> DB
+    API --> RAG
+    OBS -. telemetry .-> API
+    OBS -. telemetry .-> R2V
+    OBS -. telemetry .-> JEV
+  end
+  EGRESS["Optional controlled egress gateway"]
+  MODEL["Approved model / dataset sources"]
+  ADMIN -. "explicit download job only" .-> EGRESS
+  EGRESS -. "allowlist + checksum + license record" .-> MODEL
+  classDef private fill:#e8f2ff,stroke:#3667a6,color:#172b4d
+  classDef data fill:#edf8ee,stroke:#39834a,color:#163d20
+  classDef external fill:#fff4df,stroke:#ad7625,color:#51380e
+  class EDITOR,REVIEW,ADMIN,API,QUEUE,AUTH,DNS,R2V,JEV,POST,OBS private
+  class OBJ,DB,RAG data
+  class EGRESS,MODEL external
