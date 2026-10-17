@@ -1,0 +1,203 @@
+openapi: 3.1.0
+info:
+  title: R2V Research Explorer API
+  version: 1.0.0
+  description: >
+    R2V research records exposed through four presentation modes. The static
+    GitHub Pages UI uses the same view enum; API paths describe the future
+    backend contract and are not implemented by GitHub Pages itself.
+servers:
+  - url: https://bonsai.github.io/r2v
+    description: Static research explorer; data is served as JSON files.
+paths:
+  /research-map.json:
+    get:
+      operationId: getResearchData
+      summary: Get canonical paper and keyword dataset
+      parameters:
+        - $ref: '#/components/parameters/View'
+        - name: q
+          in: query
+          description: Optional search string applied to titles, keywords, and research questions.
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Research dataset for the selected view
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResearchMap'
+  /papers/{paperId}:
+    get:
+      operationId: getPaper
+      summary: Get one paper record
+      parameters:
+        - name: paperId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Paper record
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Paper'
+        '404':
+          description: Paper not found
+  /graph:
+    get:
+      operationId: getResearchGraph
+      summary: Get paper-keyword relations for graph view
+      responses:
+        '200':
+          description: Graph nodes and edges
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Graph'
+  /digest:
+    get:
+      operationId: getResearchDigest
+      summary: Get thematic digest for digest view
+      responses:
+        '200':
+          description: Theme groups, questions, and related paper IDs
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Digest'
+  /compare:
+    get:
+      operationId: comparePapers
+      summary: Compare paper records for comparison view
+      parameters:
+        - name: ids
+          in: query
+          required: true
+          description: Comma-separated paper IDs
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Comparable paper fields
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [items]
+                properties:
+                  items:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Paper'
+components:
+  parameters:
+    View:
+      name: view
+      in: query
+      required: false
+      description: Presentation mode; defaults to list.
+      schema:
+        $ref: '#/components/schemas/ViewMode'
+  schemas:
+    ViewMode:
+      type: string
+      enum: [list, graph, digest, compare]
+      default: list
+    ResearchMap:
+      type: object
+      required: [schema_version, seed_papers, recommended_papers, keywords]
+      properties:
+        schema_version:
+          type: string
+        purpose:
+          type: string
+        seed_papers:
+          type: array
+          items:
+            $ref: '#/components/schemas/Paper'
+        recommended_papers:
+          type: array
+          items:
+            $ref: '#/components/schemas/Paper'
+        keywords:
+          type: array
+          items:
+            $ref: '#/components/schemas/Keyword'
+    Paper:
+      type: object
+      required: [id, title, year, url, keywords]
+      properties:
+        id:
+          type: string
+        title:
+          type: string
+        year:
+          type: integer
+        url:
+          type: string
+          format: uri
+        status:
+          type: string
+          enum: [seed, recommended]
+        why:
+          type: string
+        keywords:
+          type: array
+          items:
+            type: string
+    Keyword:
+      type: object
+      required: [id, weight, kind, question]
+      properties:
+        id:
+          type: string
+        weight:
+          type: number
+        kind:
+          type: string
+        question:
+          type: string
+    Graph:
+      type: object
+      required: [nodes, edges]
+      properties:
+        nodes:
+          type: array
+          items:
+            type: object
+            required: [id, type, label]
+            properties:
+              id: { type: string }
+              type: { type: string, enum: [paper, keyword] }
+              label: { type: string }
+        edges:
+          type: array
+          items:
+            type: object
+            required: [source, target, relation]
+            properties:
+              source: { type: string }
+              target: { type: string }
+              relation: { type: string }
+    Digest:
+      type: object
+      required: [themes]
+      properties:
+        themes:
+          type: array
+          items:
+            type: object
+            required: [id, title, questions, paper_ids]
+            properties:
+              id: { type: string }
+              title: { type: string }
+              questions:
+                type: array
+                items: { type: string }
+              paper_ids:
+                type: array
+                items: { type: string }
