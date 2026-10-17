@@ -2,6 +2,17 @@ schema_version: "1.0"
 id: ai-anime-production-system
 title: "AIアニメ映画制作システム"
 status: hypothesis
+inspiration:
+  - software_factory
+  - reference_to_video
+  - toyota_production_system
+  - machine_learning
+  - kaggle_experimentation
+  - evidence_based_evaluation_jev
+  - structured_data_yaml
+research_hypothesis: "Software Factory、R2V、TPS、ML、Kaggle型実験管理を統合し、棒人間・YAML・LoRA/adapter・JEVの閉ループで映像制作の品質、再現性、効率を改善できるか検証する。"
+research_status: unverified
+scope_warning: "全要素を一度に導入せず、ベースラインから一要素ずつ比較する。"
 thesis: "生成をお呪いから科学へ、錬金術から工場へ"
 domain: animated_feature_film
 
@@ -105,6 +116,19 @@ pipeline:
   - audio_and_music
   - final_qc
   - delivery
+
+experiment_platform:
+  kaggle:
+    role: "実験ノートブック、データセット管理、ベースライン比較、再現可能な評価の候補環境"
+    required: false
+    constraints:
+      - dataset_license
+      - model_license
+      - compute_limits
+      - reproducibility
+  ml:
+    components: [base_model, lora, conditioning_adapter, pose_control, evaluation_model]
+    rule: "LoRAとadapterの効果を分離して検証する"
 
 experiment:
   baseline: "A: 通常生成"
