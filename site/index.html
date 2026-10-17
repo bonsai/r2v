@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Reference-to-Video research: searchable paper RAG index and source links.">
+  <title>R2V Paper RAG</title>
+  <style>
+    :root { color-scheme: light dark; --line: #8885; --muted: #888; }
+    body { max-width: 860px; margin: 0 auto; padding: 2rem 1.2rem 4rem; font: 16px/1.65 system-ui, sans-serif; }
+    h1 { line-height: 1.15; }
+    .card { border: 1px solid var(--line); border-radius: 14px; padding: 1rem 1.2rem; margin: 1rem 0; }
+    .muted { color: var(--muted); }
+    a { overflow-wrap: anywhere; }
+    code { font-size: .95em; }
+    .pill { display: inline-block; border: 1px solid var(--line); border-radius: 999px; padding: .1rem .65rem; }
+  </style>
+</head>
+<body>
+  <header>
+    <p class="pill">bonsai / r2v</p>
+    <h1>Reference-to-Video Paper RAG</h1>
+    <p>3本のR2V論文を対象に、GitHub Actionsで全文抽出・索引作成した研究用データベース。</p>
+  </header>
+
+  <section class="card">
+    <h2>最新の索引データ</h2>
+    <p><a href="./data/r2v_rag.sqlite3" download>SQLite全文検索データベースをダウンロード</a></p>
+    <p id="build-info" class="muted">ビルド情報を読み込み中…</p>
+    <p class="muted">このDBには論文本文から抽出したテキストチャンクが含まれます。再配布・利用前に各論文のライセンスを確認してください。</p>
+  </section>
+
+  <section class="card">
+    <h2>収録論文</h2>
+    <ul>
+      <li><a href="https://arxiv.org/abs/2512.06905">Scaling Zero-Shot Reference-to-Video Generation (Saber)</a></li>
+      <li><a href="https://arxiv.org/abs/2603.25743">RefAlign: Representation Alignment for Reference-to-Video Generation</a></li>
+      <li><a href="https://arxiv.org/abs/2609.22069">OmniVBench: A Benchmark and Large-Scale Dataset for Omni Reference-to-Video Generation</a></li>
+    </ul>
+  </section>
+
+  <section class="card">
+    <h2>ローカルで検索する</h2>
+    <p>SQLite FTS5検索CLIを使う場合は、<a href="https://github.com/bonsai/r2v/tree/main/rag">リポジトリのrag/README</a>を参照してください。</p>
+    <pre><code>python rag/r2v_rag.py ask "reference identity consistency evaluation"</code></pre>
+  </section>
+
+  <footer class="muted">
+    <p>索引は自動更新されます。DBは研究支援用で、抽出品質や引用ページを原著PDFで確認してください。</p>
+    <p><a href="https://github.com/bonsai/r2v">GitHub repository</a> · <a href="https://github.com/bonsai/r2v/actions">Workflow runs</a></p>
+  </footer>
+  <script>
+    fetch('./data/build-info.json', { cache: 'no-store' })
+      .then(r => { if (!r.ok) throw new Error('not found'); return r.json(); })
+      .then(info => {
+        document.getElementById('build-info').textContent =
+          '最終更新: ' + info.built_at + ' · commit: ' + info.commit;
+      })
+      .catch(() => {
+        document.getElementById('build-info').textContent = 'ビルド情報はまだありません。Actionsを実行してください。';
+      });
+  </script>
+</body>
+</html>
