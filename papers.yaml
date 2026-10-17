@@ -1,0 +1,98 @@
+schema_version: "1.0"
+title: "R2V・生成映像制作システム 文献カタログ"
+status: survey_seed_not_exhaustive
+updated: "2026-10-18"
+purpose:
+  - "先行研究から実験変数・評価指標・比較条件を抽出する"
+  - "論文の主張を一次資料で確認し、未確認事項を事実扱いしない"
+  - "本研究の貢献候補である工程費用・人間評価整合・採用ショット費用を検討する"
+papers:
+  - id: saber-2025
+    title: "Scaling Zero-Shot Reference-to-Video Generation"
+    year: 2025
+    url: "https://arxiv.org/abs/2512.06905"
+    topics: [reference_to_video, data_scaling, identity_consistency]
+    research_use: "参照画像と動画生成のデータ要件・参照保持の比較軸"
+    verification: "本文・実験条件・ライセンスを確認する"
+    status: seed_reference
+  - id: refalign-2026
+    title: "RefAlign: Representation Alignment for Reference-to-Video Generation"
+    year: 2026
+    url: "https://arxiv.org/abs/2603.25743"
+    topics: [reference_alignment, identity_consistency, text_controllability]
+    research_use: "参照一貫性と指示追従のトレードオフ"
+    verification: "本文・ベースライン・評価指標を確認する"
+    status: seed_reference
+  - id: omnivbench-2026
+    title: "OmniVBench: A Benchmark and Large-Scale Dataset for Omni Reference-to-Video Generation"
+    year: 2026
+    url: "https://arxiv.org/abs/2609.22069"
+    topics: [benchmark, multi_reference, factor_grounded_evaluation]
+    research_use: "参照要素を分解した課題選定・評価設計"
+    verification: "データ利用条件、タスク定義、評価プロトコルを確認する"
+    status: seed_reference
+  - id: vbench-2024
+    title: "VBench: Comprehensive Benchmark Suite for Video Generative Models"
+    year: 2024
+    url: "https://openaccess.thecvf.com/content/CVPR2024/html/Huang_VBench_Comprehensive_Benchmark_Suite_for_Video_Generative_Models_CVPR_2024_paper.html"
+    topics: [video_evaluation, benchmark]
+    research_use: "品質を複数軸に分ける評価設計"
+    verification: "本研究の制作合格条件との対応を確認する"
+    status: survey_seed
+  - id: evalcrafter-2024
+    title: "EvalCrafter"
+    year: 2024
+    url: "https://evalcrafter.github.io/"
+    topics: [video_evaluation, benchmark]
+    research_use: "動画生成評価の指標とベンチマーク"
+    verification: "指標の再現性とR2V課題への適合を確認する"
+    status: survey_seed
+  - id: videobench-2025
+    title: "Video-Bench"
+    year: 2025
+    url: "https://mlanthology.org/cvpr/2025/han2025cvpr-videobench/"
+    topics: [human_alignment, video_evaluation]
+    research_use: "自動評価と人間判断の整合を設計する"
+    verification: "人間評価プロトコルと評価者間一致を確認する"
+    status: survey_seed
+  - id: face-consistency-2025
+    title: "Face Consistency Benchmark"
+    year: 2025
+    url: "https://arxiv.org/abs/2505.11425"
+    topics: [character_consistency, face_identity]
+    research_use: "顔の一貫性と人間の採用判断の差を調べる"
+    verification: "全身・衣装・画風を含むか本文で確認する"
+    status: survey_seed
+  - id: opens2v-nexus-2025
+    title: "OpenS2V-Nexus"
+    year: 2025
+    url: "https://proceedings.neurips.cc/paper_files/paper/2025/hash/dae77d03bd51a5acfe8519848a3af6c9-Abstract-Datasets_and_Benchmarks_Track.html"
+    topics: [subject_to_video, benchmark, identity_consistency]
+    research_use: "被写体一貫性の評価設計"
+    verification: "対象タスクとデータ利用条件を確認する"
+    status: survey_seed
+  - id: controlnext-2024
+    title: "ControlNeXt"
+    year: 2024
+    url: "https://arxiv.org/abs/2408.06070"
+    topics: [conditioning, control, efficiency]
+    research_use: "制御方式の効果と追加コストの比較"
+    verification: "対象モデルとの互換性と再現性を確認する"
+    status: survey_seed
+review_fields:
+  - problem_and_research_question
+  - model_and_version
+  - dataset_and_license
+  - baseline_and_ablation
+  - sample_size_and_repeats
+  - human_evaluation_protocol
+  - metric_definitions
+  - effect_size_and_uncertainty
+  - inference_training_review_cost
+  - failure_modes_and_limitations
+  - reproducibility_and_code
+rules:
+  - "このファイルは文献の入口であり、網羅的サーベイではない"
+  - "書誌情報・本文の主張・公開日を一次資料で再確認する"
+  - "検索スニペットだけで新規性や研究ギャップを断言しない"
+  - "Kaggleは実験環境の候補であり、研究の目的や必須条件ではない"
