@@ -1,0 +1,15 @@
+<!doctype html>
+<html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>AIアニメ映画制作システム</title>
+<style>
+:root{font-family:system-ui,sans-serif;color:#172033;background:#f8fafc}body{margin:0;line-height:1.65}main{max-width:1050px;margin:auto;padding:2rem 1.2rem 4rem}h1{line-height:1.2}.thesis{font-size:1.2rem;font-weight:700}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(215px,1fr));gap:1rem}article,section.panel{background:white;border:1px solid #cbd5e1;border-radius:14px;padding:1rem}article h2{margin-top:0;font-size:1.2rem}.ref{border-top:5px solid #0284c7}.gen{border-top:5px solid #16a34a}.eval{border-top:5px solid #d97706}.tps{border-top:5px solid #9333ea}a{color:#075985}code{background:#e2e8f0;padding:.1rem .3rem;border-radius:4px}
+</style></head><body><main>
+<header><p>PRODUCTION ARCHITECTURE / RESEARCH HYPOTHESIS</p><h1>AIアニメ映画制作システム</h1><p class="thesis">生成をお呪いから科学へ、錬金術から工場へ。</p><p>棒人間 × YAML × JEV × LoRA × MLアダプターを接続し、制作の再現性・品質・効率を改善できるか検証する。</p></header>
+<h2>4つのレイヤー</h2><div class="grid">
+<article class="ref"><h2>1. Reference</h2><p><b>何を作るか</b></p><p>脚本、キャラクター、世界観、棒人間、絵コンテ、YAML仕様を正本として管理する。</p><p>TEXT / YAML / PNG / HTML / SVG / RAG</p><p>構造化データが正本。RAGは検索用。</p></article>
+<article class="gen"><h2>2. Generation</h2><p><b>どう候補を作るか</b></p><p>棒人間でポーズやタイミングを明示し、モデル・LoRA・MLアダプター・プロンプト・参照版・seedを記録する。</p><p>候補と採用済み素材を区別する。</p></article>
+<article class="eval"><h2>3. Eval / JEV</h2><p><b>何を合格とするか</b></p><p>命題・証拠・評価基準・スコア・確信度を結び付け、合否と失敗理由を記録する。</p><p><code>PASS</code> / <code>REVISE</code> / <code>REJECT</code> / <code>NEEDS_HUMAN_REVIEW</code></p></article>
+<article class="tps"><h2>4. Production System / TPS-Gate</h2><p><b>どう完成まで流すか</b></p><p>Gate A：仕様、B：素材、C：ショット、D：納品。合格した素材だけを次工程へ流す。</p><p>待ち・手戻り・重複生成・廃棄を減らす。</p></article></div>
+<h2>閉ループ</h2><section class="panel"><p>脚本・世界観 → YAML仕様 → 棒人間／絵コンテ → LoRA・MLアダプターを使った生成 → JEV評価 → TPS/Gate → 編集・納品。</p><p><b>不合格時：</b>原因に応じて仕様、ポーズ、生成条件、評価基準の該当箇所へ戻す。全工程を無差別に再生成しない。</p></section>
+<h2>検証計画</h2><section class="panel"><ol><li>通常生成をベースラインにする。</li><li>YAML仕様を追加する。</li><li>棒人間／ポーズ制御を追加する。</li><li>キャラクターLoRAを追加する。</li><li>MLアダプターとJEVフィードバックを追加する。</li></ol><p>同じシーンと評価基準を使い、可能な範囲で生成条件を揃える。ポーズ一致、キャラクター一貫性、時間的連続性、初回合格率、手戻り率、合格ショットあたりコストを測定する。仮説は未検証であり、JEVの判定も人間の抜き取り評価と照合する。</p></section>
+<h2>再利用ファイル</h2><ul><li><a href="./production-system.yaml">YAML — 共通データモデル</a></li><li><a href="./production-system.mmd">Mermaid — フロー図</a></li><li><a href="./production-system.puml">PlantUML — システム図</a></li><li><a href="./production-system.svg">SVG — アーキテクチャ図</a></li><li><a href="./README.md">README — 資料一覧</a></li></ul>
+</main></body></html>
