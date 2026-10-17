@@ -121,3 +121,10 @@ The LoRA + adapter + JEV feedback loop is a research hypothesis, not a validated
 - [AI anime production system package](docs/ai-anime-production/README.md)
 
 The combined architecture is a research hypothesis, not a proven result. The plan starts with one R2V baseline and adds controls and evaluation one at a time.
+
+
+### Research plan and paper outline
+
+- [Paper outline](docs/ai-anime-production/paper-outline.md)
+- [Task image/shot selection and evidence plan](docs/ai-anime-production/dataset-and-evidence-plan.md)
+- [Kaggle experiment protocol](docs/ai-anime-production/kaggle-experiment-protocol.md)
