@@ -66,7 +66,7 @@ jobs:
               "database": "r2v_rag.sqlite3"
           }
           Path("site/data/build-info.json").write_text(
-              json.dumps(payload, ensure_ascii=False, indent=2) + "\\n",
+              json.dumps(payload, ensure_ascii=False, indent=2) + "\n",
               encoding="utf-8"
           )
           PY
