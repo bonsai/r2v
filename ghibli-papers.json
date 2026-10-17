@@ -1,0 +1,36 @@
+{
+  "title": "ジブリ関連研究論文リスト",
+  "description": "宮崎駿作品、スタジオジブリ作品の物語構造・表現・受容に関する研究。pdf はPDF本体への直リンク。",
+  "papers": [
+    {
+      "title": "宮崎駿による長編アニメーション映画「もののけ姫」の構造：キアスムスの核の機能",
+      "pdf": "https://www.jstage.jst.go.jp/article/jinbunxshakai/1/2/1_129/_pdf/-char/ja",
+      "summary": "『もののけ姫』の物語を対称的な構造として分析し、物語の中心にある転換点と、自然と文明の対立を考察する。"
+    },
+    {
+      "title": "宮崎駿作品のアメリカにおける浸透過程",
+      "pdf": "https://www.jstage.jst.go.jp/article/jjas/17/1/17_3/_pdf/-char/ja",
+      "summary": "宮崎駿作品がアメリカで受容される過程を、映像ソフトのパッケージ、販売戦略、検閲、翻訳・現地化の観点から分析する。"
+    },
+    {
+      "title": "リトルマザーとビッグマザー――アニメーション映画の中でのジェンダー表象",
+      "pdf": "https://www.jstage.jst.go.jp/article/jjas/17/2/17_23/_pdf/-char/ja",
+      "summary": "ディズニーと宮崎駿作品の女性キャラクターを比較し、主体性、母性、ジェンダー観の表現を分析する。"
+    },
+    {
+      "title": "『天空の城ラピュタ』の漫画技法：宮崎駿の手塚治虫批判とジャパニメーションの時代",
+      "pdf": "https://www.jstage.jst.go.jp/article/jscsj/5/0/5_88/_pdf/-char/ja",
+      "summary": "『天空の城ラピュタ』を題材に、漫画的な表現技法と宮崎駿の漫画・アニメーション観を考察する。"
+    },
+    {
+      "title": "短編アニメーション作品『On Your Mark』の裏返し構造――宮崎作品にみられる特徴",
+      "pdf": "https://www.jstage.jst.go.jp/article/hcs/2017/27/2017_251/_pdf/-char/ja",
+      "summary": "短編『On Your Mark』の物語を対応する場面の組み合わせとして分析し、宮崎作品に見られる反転構造を検討する。"
+    },
+    {
+      "title": "Far beyond the obvious: complexity and narrative perspectives in Hayao Miyazaki’s anime films",
+      "pdf": "https://link.springer.com/content/pdf/10.1007/s11059-026-00890-4.pdf",
+      "summary": "宮崎駿作品における生態系や文化の複雑さを分析し、単純な善悪二元論に還元されない物語構造を論じる。"
+    }
+  ]
+}
