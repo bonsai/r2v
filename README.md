@@ -87,3 +87,15 @@ The GitHub Actions workflow rebuilds the SQLite index and publishes the site and
 - Workflow: [Build and publish R2V paper RAG](.github/workflows/rag.yml)
 
 The published SQLite database contains extracted full-text chunks. Before making the site public, verify the license and redistribution terms for all three papers. If the repo's Pages settings do not use **GitHub Actions** as the build/deploy source, configure Settings → Pages → Build and deployment → Source: GitHub Actions.
+
+
+## Research Explorer: four views
+
+The static explorer presents the same canonical `site/research-map.json` data in four modes:
+
+- **List** — browse papers and their keywords.
+- **Graph** — explore paper-to-keyword relationships and filter by a keyword.
+- **Digest** — read theme-based summaries and research questions.
+- **Compare** — compare seed papers and recommendations in a table.
+
+Select a mode in the UI or use `?view=list|graph|digest|compare`. Search and keyword filters are shared across modes. The OpenAPI 3.1 contract is in [`openapi.yaml`](openapi.yaml). Its `/papers/{paperId}`, `/graph`, `/digest`, and `/compare` paths describe a future API boundary; GitHub Pages currently serves static files only, so those paths are not live HTTP endpoints.
