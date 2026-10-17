@@ -1,0 +1,84 @@
+schema_version: "1.0"
+id: bonsai.r2v.graph2puml
+name: Graph to PlantUML Mapping
+status: specification
+purpose: Convert the normalized R2V property graph into readable PlantUML diagrams.
+input:
+  default_path: graph/r2v.graph.yml
+  required_fields:
+    nodes: [id, type]
+    edges: [source, type, target]
+outputs:
+  default_path: diagrams/r2v.puml
+  optional_views:
+    - diagrams/ontology-classes.puml
+    - diagrams/research-records.puml
+    - diagrams/evidence-flow.puml
+rendering:
+  language: PlantUML
+  default_diagram: class
+  node_alias: deterministic_alias_from_node_id
+  label: node.label
+  fallback_label: node.id
+  aliases:
+    sanitize: replace_non_alphanumeric_with_underscore
+    prefix: N_
+    collision_policy: append_stable_hash_suffix
+  node_styles:
+    OntologyConcept:
+      stereotype: ontology
+    OntologyRelation:
+      stereotype: relation
+    Paper:
+      stereotype: paper
+    Claim:
+      stereotype: claim
+    EvidencePassage:
+      stereotype: evidence
+    EvidenceReference:
+      stereotype: retrieved_evidence
+    ResearchQuestion:
+      stereotype: question
+    ResearchAnswer:
+      stereotype: answer
+  edge_rendering:
+    syntax: "source_alias --> target_alias : relation_label"
+    label: edge.type
+    preserve_direction: true
+    unknown_endpoints: omit_and_report
+  property_rendering:
+    enabled: true
+    include:
+      - id
+      - arxiv_id
+      - verification_status
+      - page
+      - confidence
+    exclude_large_or_sensitive:
+      - text
+      - answer_text
+      - raw_content
+  grouping:
+    by_node_type: true
+    use_plantuml_packages: true
+  layout:
+    direction: left_to_right
+    skinparam:
+      classAttributeIconSize: 0
+      linetype: ortho
+validation:
+  - Escape PlantUML special characters in labels and property values.
+  - Use deterministic aliases so repeated builds produce stable diagrams.
+  - Never render arbitrary node values as PlantUML directives.
+  - Report missing endpoints and alias collisions.
+  - Do not infer edges from ontology domain/range declarations unless generating a separate schema-only view.
+views:
+  ontology_classes:
+    source: concept and relation definition nodes
+    include_properties: [description, domain, range]
+  research_records:
+    source: Paper, Method, Dataset, Benchmark, Claim and related instance nodes
+    include_properties: [arxiv_id, verification_status]
+  evidence_flow:
+    source: Paper, EvidencePassage, EvidenceReference, Claim, ResearchQuestion, ResearchAnswer
+    include_properties: [page, verification_status, confidence]
