@@ -1,0 +1,295 @@
+{
+  "schema_version": "1.0",
+  "purpose": "Static research map. Candidate keywords and reading recommendations are hypotheses inferred from the three seed papers, not an exhaustive literature review.",
+  "seed_papers": [
+    {
+      "id": "saber",
+      "title": "Scaling Zero-Shot Reference-to-Video Generation",
+      "year": 2025,
+      "url": "https://arxiv.org/abs/2512.06905",
+      "status": "seed",
+      "keywords": [
+        "data scaling",
+        "zero-shot conditioning",
+        "identity consistency",
+        "training data"
+      ]
+    },
+    {
+      "id": "refalign",
+      "title": "RefAlign: Representation Alignment for Reference-to-Video Generation",
+      "year": 2026,
+      "url": "https://arxiv.org/abs/2603.25743",
+      "status": "seed",
+      "keywords": [
+        "representation alignment",
+        "identity consistency",
+        "text controllability",
+        "copy-paste artifacts"
+      ]
+    },
+    {
+      "id": "omnivbench",
+      "title": "OmniVBench: A Benchmark and Large-Scale Dataset for Omni Reference-to-Video Generation",
+      "year": 2026,
+      "url": "https://arxiv.org/abs/2609.22069",
+      "status": "seed",
+      "keywords": [
+        "benchmark design",
+        "multi-reference control",
+        "factor-grounded evaluation",
+        "motion",
+        "style",
+        "structure",
+        "narrative"
+      ]
+    }
+  ],
+  "recommended_papers": [
+    {
+      "id": "mv2id",
+      "title": "Identity-Consistent Video Generation under Large Facial-Angle Variations (Mv²ID)",
+      "year": 2026,
+      "url": "https://arxiv.org/abs/2603.21299",
+      "why": "Adds multi-view identity, view-dependent copy-paste, and motion naturalness to the seed themes.",
+      "keywords": [
+        "multi-view references",
+        "identity consistency",
+        "copy-paste artifacts",
+        "motion naturalness",
+        "region masking",
+        "RoPE"
+      ]
+    },
+    {
+      "id": "harmoview",
+      "title": "HarmoView: Harmonizing Multi-View Constraints for Identity-Consistent Video Generation",
+      "year": 2026,
+      "url": "https://arxiv.org/abs/2606.10839",
+      "why": "Explore view fusion, reference-view mismatch, identity crosstalk, and staged training.",
+      "keywords": [
+        "multi-view references",
+        "feature injection",
+        "identity crosstalk",
+        "view mismatch",
+        "curriculum learning"
+      ]
+    },
+    {
+      "id": "aura",
+      "title": "Aura: Consistent Multi-Subject Video Generation via VLM-Grounded Semantic Alignment",
+      "year": 2026,
+      "url": "https://arxiv.org/abs/2607.04311",
+      "why": "Connect representation alignment to multi-subject interactions, VLM grounding, subject-aware encoding, and prompt alignment.",
+      "keywords": [
+        "multi-subject generation",
+        "VLM alignment",
+        "semantic alignment",
+        "subject binding",
+        "copy-paste artifacts"
+      ]
+    },
+    {
+      "id": "keyid",
+      "title": "KeyID: Decoupled Drafting and Keyframe Editing for Identity-Preserving Video Generation",
+      "year": 2026,
+      "url": "https://arxiv.org/abs/2608.16154",
+      "why": "Explore a training-free alternative separating motion drafting from identity correction.",
+      "keywords": [
+        "training-free methods",
+        "keyframe editing",
+        "identity consistency",
+        "motion interpolation",
+        "prompt adherence"
+      ]
+    },
+    {
+      "id": "kaleido",
+      "title": "Kaleido: Open-Sourced Multi-Subject Reference Video Generation Model",
+      "year": 2025,
+      "url": "https://arxiv.org/abs/2510.18573",
+      "why": "Implementation-oriented follow-up on open-source subject-to-video, multi-image conditioning, background disentanglement, and data construction.",
+      "keywords": [
+        "open-source models",
+        "multi-subject generation",
+        "multi-reference control",
+        "background disentanglement",
+        "training data"
+      ]
+    },
+    {
+      "id": "mvs2v",
+      "title": "MV-S2V: Multi-View Subject-Consistent Video Generation",
+      "year": 2026,
+      "url": "https://arxiv.org/abs/2601.17756",
+      "why": "Extends single-view subject-to-video toward multi-view and 3D-level consistency.",
+      "keywords": [
+        "multi-view references",
+        "3D consistency",
+        "subject-to-video",
+        "synthetic data",
+        "training data"
+      ]
+    },
+    {
+      "id": "stdrc",
+      "title": "Spatial-Temporal Decoupled Reference Conditioning for Identity-Preserving Text-to-Video Generation",
+      "year": 2026,
+      "url": "https://arxiv.org/abs/2606.02441",
+      "why": "Investigate spatial/temporal separation in reference conditioning and positional encoding.",
+      "keywords": [
+        "spatial-temporal conditioning",
+        "RoPE",
+        "identity consistency",
+        "copy-paste artifacts",
+        "reference conditioning"
+      ]
+    }
+  ],
+  "keywords": [
+    {
+      "id": "identity consistency",
+      "weight": 10,
+      "kind": "core",
+      "question": "How is identity preserved across frames, viewpoints, and long sequences?"
+    },
+    {
+      "id": "multi-view references",
+      "weight": 9,
+      "kind": "frontier",
+      "question": "Do multiple reference views improve identity without copy-paste artifacts?"
+    },
+    {
+      "id": "multi-reference control",
+      "weight": 9,
+      "kind": "core",
+      "question": "How are different reference images assigned to factors or subjects?"
+    },
+    {
+      "id": "copy-paste artifacts",
+      "weight": 9,
+      "kind": "failure",
+      "question": "How do we distinguish genuine generation from copying reference pixels?"
+    },
+    {
+      "id": "representation alignment",
+      "weight": 8,
+      "kind": "method",
+      "question": "Which representation spaces and alignment losses improve fidelity and controllability?"
+    },
+    {
+      "id": "factor-grounded evaluation",
+      "weight": 8,
+      "kind": "evaluation",
+      "question": "Can each requested factor be scored independently and attributed to the right subject?"
+    },
+    {
+      "id": "text controllability",
+      "weight": 7,
+      "kind": "control",
+      "question": "How can prompt adherence be balanced against reference fidelity?"
+    },
+    {
+      "id": "multi-subject generation",
+      "weight": 8,
+      "kind": "frontier",
+      "question": "How are identities, actions, and interactions separated across subjects?"
+    },
+    {
+      "id": "motion naturalness",
+      "weight": 7,
+      "kind": "evaluation",
+      "question": "Does identity preservation compromise realistic motion?"
+    },
+    {
+      "id": "training data",
+      "weight": 7,
+      "kind": "data",
+      "question": "Which paired, cross-paired, synthetic, or video-text data is necessary?"
+    },
+    {
+      "id": "VLM alignment",
+      "weight": 6,
+      "kind": "method",
+      "question": "Can vision-language features ground identity and semantic relationships?"
+    },
+    {
+      "id": "RoPE",
+      "weight": 6,
+      "kind": "method",
+      "question": "How can positional encoding separate reference tokens from video tokens or subjects?"
+    },
+    {
+      "id": "training-free methods",
+      "weight": 6,
+      "kind": "method",
+      "question": "Can identity be injected or corrected without additional training?"
+    },
+    {
+      "id": "keyframe editing",
+      "weight": 5,
+      "kind": "method",
+      "question": "Can sparse identity corrections preserve motion over long sequences?"
+    },
+    {
+      "id": "benchmark design",
+      "weight": 7,
+      "kind": "evaluation",
+      "question": "Which protocols expose failure modes missed by aggregate scores?"
+    },
+    {
+      "id": "data scaling",
+      "weight": 6,
+      "kind": "data",
+      "question": "How does data scale and diversity affect zero-shot reference conditioning?"
+    },
+    {
+      "id": "background disentanglement",
+      "weight": 5,
+      "kind": "method",
+      "question": "Can subject identity be separated from background and scene?"
+    },
+    {
+      "id": "subject binding",
+      "weight": 6,
+      "kind": "control",
+      "question": "Does the correct identity receive the correct action and attributes?"
+    },
+    {
+      "id": "3D consistency",
+      "weight": 5,
+      "kind": "frontier",
+      "question": "How consistent is a subject across views and implicit 3D structure?"
+    },
+    {
+      "id": "spatial-temporal conditioning",
+      "weight": 5,
+      "kind": "method",
+      "question": "Should spatial identity cues and temporal motion cues be conditioned separately?"
+    },
+    {
+      "id": "prompt adherence",
+      "weight": 6,
+      "kind": "evaluation",
+      "question": "How can instruction following be measured alongside identity fidelity?"
+    },
+    {
+      "id": "synthetic data",
+      "weight": 5,
+      "kind": "data",
+      "question": "Can synthetic data reduce the cost of multi-view training sets?"
+    },
+    {
+      "id": "curriculum learning",
+      "weight": 4,
+      "kind": "method",
+      "question": "Does staged training stabilize transitions from T2V to multi-view control?"
+    },
+    {
+      "id": "identity crosstalk",
+      "weight": 5,
+      "kind": "failure",
+      "question": "When do multiple subjects leak features or identities into one another?"
+    }
+  ]
+}
