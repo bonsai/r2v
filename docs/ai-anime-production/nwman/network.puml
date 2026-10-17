@@ -1,0 +1,59 @@
+@startuml
+title nwman — LAN-only AI anime production network
+left to right direction
+skinparam componentStyle rectangle
+skinparam packageStyle rectangle
+
+package "LAN / private network only" {
+  package "Studio VLAN" {
+    [制作端末] as Editor
+    [レビューUI] as Review
+    [管理端末] as Admin
+  }
+  package "Control plane" {
+    [Internal DNS] as DNS
+    [Internal Job API] as API
+    queue "Job Queue" as Queue
+    [Auth / RBAC] as Auth
+    [Logs / Metrics] as Obs
+  }
+  package "Worker plane" {
+    [R2V generation workers] as R2V
+    [JEV evaluation workers] as JEV
+    [Image / video post-process] as Post
+  }
+  package "Data plane" {
+    database "Object storage\nrefs / candidates / accepted" as Obj
+    database "Metadata DB / experiment log" as DB
+    database "RAG / SQLite index" as Rag
+  }
+
+  Editor --> API
+  Review --> API
+  Admin --> Auth
+  API --> Auth
+  API --> Queue
+  Queue --> R2V
+  Queue --> JEV
+  R2V --> Obj
+  R2V --> DB
+  JEV --> DB
+  JEV --> Queue
+  Post --> Obj
+  Post --> DB
+  API --> DB
+  API --> Rag
+  Obs ..> API : telemetry
+  Obs ..> R2V : telemetry
+  Obs ..> JEV : telemetry
+}
+cloud "Approved model / dataset sources" as External
+[Controlled egress gateway\nallowlist + checksum + license record] as Egress
+Admin ..> Egress : explicit download job only
+Egress ..> External
+note bottom
+  No public ingress to studio services.
+  Default-deny internet egress for generation workers.
+  Kubernetes is a future deployment target, not an MVP dependency.
+end note
+@enduml
