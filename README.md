@@ -99,3 +99,17 @@ The static explorer presents the same canonical `site/research-map.json` data in
 - **Compare** — compare seed papers and recommendations in a table.
 
 Select a mode in the UI or use `?view=list|graph|digest|compare`. Search and keyword filters are shared across modes. The OpenAPI 3.1 contract is in [`openapi.yaml`](openapi.yaml). Its `/papers/{paperId}`, `/graph`, `/digest`, and `/compare` paths describe a future API boundary; GitHub Pages currently serves static files only, so those paths are not live HTTP endpoints.
+
+
+## AI anime production system
+
+Reusable structured design package for Reference / Generation / Eval-JEV / TPS-Gate, including stick-figure motion control, YAML specifications, LoRA, and ML adapters.
+
+- [Overview and index](docs/ai-anime-production/README.md)
+- [HTML overview](docs/ai-anime-production/production-system.html)
+- [SVG architecture](docs/ai-anime-production/production-system.svg)
+- [Mermaid diagram](docs/ai-anime-production/production-system.mmd)
+- [PlantUML diagram](docs/ai-anime-production/production-system.puml)
+- [Canonical YAML](docs/ai-anime-production/production-system.yaml)
+
+The LoRA + adapter + JEV feedback loop is a research hypothesis, not a validated result. See the package for the staged comparison plan.
