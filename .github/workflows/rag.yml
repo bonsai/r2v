@@ -1,25 +1,32 @@
-name: Build R2V paper RAG index
+name: Build and publish R2V paper RAG
 
 on:
   workflow_dispatch:
   push:
+    branches: [main]
     paths:
       - "rag/**"
+      - "site/**"
       - ".github/workflows/rag.yml"
   schedule:
     - cron: "23 3 * * 1"
 
 permissions:
   contents: read
+  pages: write
+  id-token: write
 
 concurrency:
-  group: r2v-rag-index
+  group: r2v-rag-pages
   cancel-in-progress: true
 
 jobs:
-  build-index:
+  build-and-publish:
     runs-on: ubuntu-latest
     timeout-minutes: 30
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -43,7 +50,30 @@ jobs:
           test -s rag-smoke-test.txt
           grep -q "arXiv:" rag-smoke-test.txt
 
-      - name: Upload generated index and smoke-test output
+      - name: Prepare GitHub Pages site
+        env:
+          COMMIT_SHA: ${{ github.sha }}
+        run: |
+          mkdir -p site/data
+          cp rag/data/r2v_rag.sqlite3 site/data/r2v_rag.sqlite3
+          python - <<'PY'
+          import datetime, json, os
+          from pathlib import Path
+          payload = {
+              "built_at": datetime.datetime.now(datetime.timezone.utc).isoformat(timespec="seconds"),
+              "commit": os.environ["COMMIT_SHA"][:7],
+              "papers": 3,
+              "database": "r2v_rag.sqlite3"
+          }
+          Path("site/data/build-info.json").write_text(
+              json.dumps(payload, ensure_ascii=False, indent=2) + "\\n",
+              encoding="utf-8"
+          )
+          PY
+          test -s site/index.html
+          test -s site/data/r2v_rag.sqlite3
+
+      - name: Upload RAG database artifact
         uses: actions/upload-artifact@v4
         with:
           name: r2v-rag-index-${{ github.run_id }}
@@ -52,3 +82,17 @@ jobs:
             rag-smoke-test.txt
           if-no-files-found: error
           retention-days: 14
+
+      - name: Configure GitHub Pages
+        uses: actions/configure-pages@v5
+        with:
+          enablement: true
+
+      - name: Upload site artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: site
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
