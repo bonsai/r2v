@@ -113,3 +113,11 @@ Reusable structured design package for Reference / Generation / Eval-JEV / TPS-G
 - [Canonical YAML](docs/ai-anime-production/production-system.yaml)
 
 The LoRA + adapter + JEV feedback loop is a research hypothesis, not a validated result. See the package for the staged comparison plan.
+
+
+### Research hypothesis: Software Factory × R2V × TPS × ML/Kaggle
+
+- [Full hypothesis and staged experiment plan](docs/ai-anime-production/hypothesis.md)
+- [AI anime production system package](docs/ai-anime-production/README.md)
+
+The combined architecture is a research hypothesis, not a proven result. The plan starts with one R2V baseline and adds controls and evaluation one at a time.
