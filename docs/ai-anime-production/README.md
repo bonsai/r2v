@@ -67,3 +67,7 @@ YAMLは全条件共通の記録・再現基盤とし、その効果は初期実�
 - [PlantUML](./nwman/network.puml)
 - [Topology YAML](./nwman/network.yaml)
 - [設計原則・Kubernetes移行方針](./nwman/README.md)
+
+## シミュレーションからの気づき
+
+- [人間とAIの評価不一致・自動化の境界・品質ゲート](./simulation-insights.md)
