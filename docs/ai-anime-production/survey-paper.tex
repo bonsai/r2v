@@ -1,0 +1,97 @@
+% !TEX program = pdflatex
+\documentclass[11pt,a4paper]{article}
+\usepackage[margin=24mm]{geometry}
+\usepackage{booktabs,tabularx,array}
+\usepackage{amsmath,amssymb}
+\usepackage{hyperref}
+\usepackage{enumitem}
+\usepackage{url}
+\usepackage{longtable}
+\hypersetup{colorlinks=true,linkcolor=blue,urlcolor=blue,citecolor=blue}
+\title{参照条件付き生成映像の品質評価と制作工程設計に関するサーベイ\\
+\large R2V・人間整合評価・ソフトウェアファクトリ・TPSの接点}
+\author{Survey manuscript draft --- bonsai/r2v}
+\date{2026年10月18日}
+\begin{document}
+\maketitle
+
+\begin{abstract}
+参照画像に基づく動画生成（Reference-to-Video; R2V）は、テキスト指示への適合と参照対象の同一性を同時に満たすことを目指す。一方、実際のアニメーション制作で必要なのは、個々の動画の見栄えだけではない。ショット間の一貫性、意図した動作、修正可能性、レビューの信頼性、再生成や人手修正を含む制作コストも問題となる。本稿は、R2V生成、動画生成評価、人間判断との整合、参照要素を分解した評価、TPSの品質管理原則、およびソフトウェアファクトリの仕様・履歴管理を横断して整理する。文献から、（1）参照忠実度と指示追従の両立、（2）評価指標と人間の採用判断の差、（3）生成品質と制作工程コストの接続、（4）構成要素の限界寄与の検証、という研究課題を抽出する。提案システムやTPSの効果を実証済みとは扱わず、今後の比較実験で検証すべき仮説として位置づける。本稿は現時点の探索的サーベイであり、検索式・対象期間・除外基準を固定したシステマティックレビューではない。
+\end{abstract}
+
+\section{目的と範囲}
+本稿の目的は、生成映像制作のための工程設計を検討する際に、既存研究が何を評価し、何を評価対象外としているかを整理することである。対象は主にR2V、動画生成ベンチマーク、人間整合評価、動作・被写体一貫性、TPSの工程原則である。LoRA、追加制御アダプター、Kaggle、Kubernetes等は選択可能な技術要素であり、すべてを一度に導入することを前提としない。
+
+本稿では、次の用語を区別する。
+\begin{itemize}[nosep]
+\item \textbf{生成品質}: 画質、指示適合、参照一貫性、動作・時間的一貫性などの出力特性。
+\item \textbf{制作品質}: 制作目的に照らした採用可能性。自動指標の高得点だけでは決まらない。
+\item \textbf{工程性能}: 初回合格率、手戻り、レビュー時間、リードタイム、採用ショットあたり総費用。
+\item \textbf{人間整合}: 自動評価器と人間評価者の判定がどの程度一致し、どの失敗を見落とすか。
+\end{itemize}
+
+\section{サーベイ方法と限界}
+本稿は2026年10月時点の探索的な文献整理である。R2Vの代表的な研究、公開ベンチマーク、公式TPS説明、および生成動画評価に関するサーベイを起点に、引用文献と公開プロジェクトを追跡した。対象を網羅する体系的検索は未完了であり、検索データベース、検索式、重複除去、採否判定を記録したシステマティックレビューではない。したがって、文献の不存在をもって研究の新規性を主張しない。各論文の詳細な設定・数値・ライセンスは原文および公式リポジトリで再確認する必要がある。
+
+\section{R2V：参照忠実度と指示追従}
+R2Vは、テキスト指示に従いながら参照画像の被写体同一性を保った動画を生成する課題である。Saberは、参照画像・動画・テキストの明示的な三つ組データの構築コストに注目し、動画とテキストのペアを用いた学習、マスク戦略、注意機構によってゼロショットの参照対応を学ぶ方法を提示した \cite{zhou2025saber}。この研究は、参照付き学習データの調達そのものがボトルネックになり得ることを示す方向性として重要である。
+
+RefAlignは、参照ブランチの特徴表現を視覚基盤モデルの意味空間に整合させ、同一対象の表現を近づけ、異なる対象を分離する学習目的を提案する \cite{wang2026refalign}。同論文は、参照忠実度とテキスト制御性のトレードオフ、およびコピー・ペースト状の破綻や複数対象の混同を課題として扱う。SaberとRefAlignは異なる設計上のアプローチを採るが、いずれも生成モデル内部の仕組みを改良する研究であり、制作現場のレビュー工程・人件費・採用判断まで自動的に最適化するものではない。
+
+OmniVBenchは、参照を単一の全体類似度として扱うのではなく、内容、動作、スタイル、構造、物語、複数参照などの要素別に、参照要素が適切に保持・分離・割当されているかを評価する枠組みを提示する \cite{li2026omnivbench}。この因子分解の考え方は、制作仕様を「キャラクター」「動作」「背景」「画風」「構図」などの命題に分け、何が守られ何が破綻したかを記録する設計と親和性がある。ただし、ベンチマーク上の評価と実際の制作採用判断が同じとは限らず、対象ドメインに応じた検証が必要である。
+
+\section{動画生成評価と人間判断}
+動画生成の評価には、画質、意味的指示適合、時間的安定性、物理的妥当性、美的品質など異なる側面がある。VBenchは生成動画を複数の評価次元に分解する包括的なベンチマークを提供する \cite{huang2024vbench}。EvalCrafterも、生成動画を多角的に比較するための評価指標・ベンチマークを扱う \cite{liu2024evalcrafter}。これらは、単一の総合スコアだけでは生成の異なる失敗モードを見落とすという問題意識に役立つ。
+
+Video-Benchは、マルチモーダル大規模言語モデル（MLLM）を用いた評価と人間の選好との整合を検討し、複数の評価観点を段階的に問う方式を提案する \cite{han2025videobench}。2026年の生成動画評価サーベイは、指標ベース、人間関与型、モデルベースの評価を分類し、時空間的一貫性、意味理解、信頼性などの課題を整理する \cite{safavigerdini2026survey}。これらの研究は自動評価の可能性を示す一方で、自動評価を制作判断の完全な代替とみなす根拠にはならない。
+
+特にアニメ制作では、数値上の画質が高くても、顔・手・演技・視線・画風・構図の意図が崩れていれば採用できない場合がある。逆に、背景の物体数、位置、色、画面内の有無など、条件を明示できる項目は機械判定に向いている可能性がある。この区別は一般則として確定したものではなく、評価者実験で検証すべき設計仮説である。
+
+自動評価器を検証する場合、全体一致率だけでは不十分である。人間が不合格とした素材を自動評価器が合格とする誤PASS、合格素材を不合格とする誤REJECT、評価者間一致度、項目別の不一致を分けて報告する必要がある。人間の合否判定が絶対的な真値であるとも限らないため、評価ルーブリック、複数評価者、盲検化、裁定手続を明示することが望ましい。
+
+\section{TPSとSoftware Factoryを制作工程に接続する}
+トヨタ公式の説明では、TPSはムダの徹底排除とリードタイム短縮を目指し、主要な柱としてJidoka（異常時に止めて不良の流出を防ぐ考え方）とJust-in-Time（必要なものを必要なときに必要な量だけ流す考え方）を挙げる \cite{toyotaTPS}。この考え方を生成映像制作へ応用するなら、品質基準を満たさないショットを後工程へ流さないゲート、必要な段階でのレビュー、失敗原因の分類、不要な再生成の削減などが対応候補となる。
+
+ただし、アニメ制作は創造的判断と反復探索を含むため、製造ラインの手順をそのまま移植することは適切とは限らない。早すぎるゲートが創造的探索を妨げたり、レビュー待ちを増やしたりする可能性もある。したがってTPSは規範的な正解ではなく、比較検証すべき工程仮説として扱う。TPS型ゲートと、より短いイベント駆動の評価・修正サイクルのどちらが有利かは、品質・コスト・リードタイムの実測で判断する。
+
+Software Factory的な設計では、仕様、入力素材、生成条件、評価結果、採否理由を構造化し、各成果物の由来を追跡できるようにする。制作仕様をYAML、キャラクターシートをHTML、絵コンテをSVG、参照素材を画像、関連文書を検索可能なチャンクとして扱う構成は、実装可能な設計案である。ただし、構造化記録の導入自体が品質向上を保証するわけではない。初期実験では全条件に共通する計測基盤として使用し、その独立効果は後続実験で切り分ける必要がある。
+
+\section{研究課題の統合}
+先行研究から、以下の研究課題が抽出される。
+\begin{enumerate}
+\item \textbf{出力指標から工程KPIへ}: 生成動画の品質指標を、初回合格率、手戻り、レビュー時間、採用ショットあたり総費用に接続する。
+\item \textbf{要素別の評価}: 全体類似度だけでなく、動作・対象・背景・スタイルなどの命題別に適合を記録する。
+\item \textbf{人間-AIの不一致}: 自動評価器の平均スコアだけでなく、誤PASSと誤REJECTのコストを測定する。
+\item \textbf{限界寄与と費用}: ポーズ制御、JEV型修正ループ、LoRA、追加アダプターなどを一括導入せず、個別の限界寄与と総コストを比較する。
+\item \textbf{工程方式の比較}: TPS型ゲートを採用する価値を、短いフィードバックループなどの代替案と比較する。
+\end{enumerate}
+
+これらは文献から導いた研究課題であり、「先行研究が実施していない」と確認済みの主張ではない。新規性を確定するには、体系的な検索と関連研究の引用追跡が必要である。
+
+\section{研究計画への含意}
+サーベイからの実務的な含意は、初期実験を小さくし、原因と効果を分離できる比較を優先することである。最初の比較は、A: R2V通常生成、B: 棒人間／ポーズ制御を追加、C: BにJEV型評価・修正ループを追加、の3条件に限定できる。YAMLは全条件共通の記録基盤とし、LoRA、追加アダプター、TPSゲートは初期比較の必須要素から外す。
+
+主要指標は、（i）人間評価による最低品質条件、（ii）ポーズ・指示適合、（iii）JEVと人間の一致度および誤PASS率、（iv）初回合格率、（v）採用ショットあたり総費用、（vi）リードタイムとする。費用には推論、追加学習・調整、評価、再生成、後処理、人間レビューを含める。品質の最低条件を満たさない安価な構成を最適と扱わない。
+
+\section{結論}
+R2V研究は参照忠実度と指示追従の改善を進め、評価研究は動画品質を多次元に分け、人間の選好との整合を測る方向に発展している。TPSは異常の早期検出、ムダの削減、流れの改善を考えるための概念的な枠組みを提供する。しかし、これらを結合した制作工程が品質や費用を改善するかは、現時点で本稿からは結論できない。次段階では、課題ショットを限定し、ポーズ制御とJEVループの寄与を比較する小規模な研究計画を立てる。新しいモデルや工程を増やすこと自体ではなく、品質要件を満たしながら不要な費用・複雑さを除外できる証拠を得ることが目標である。
+
+\begin{thebibliography}{99}
+\bibitem{zhou2025saber}
+Z. Zhou et al. \newblock Scaling Zero-Shot Reference-to-Video Generation. \newblock arXiv:2512.06905, 2025. \url{https://arxiv.org/abs/2512.06905}
+\bibitem{wang2026refalign}
+L. Wang et al. \newblock RefAlign: Representation Alignment for Reference-to-Video Generation. \newblock arXiv:2603.25743, 2026. \url{https://arxiv.org/abs/2603.25743}
+\bibitem{li2026omnivbench}
+W. Li et al. \newblock OmniVBench: A Benchmark and Large-Scale Dataset for Omni Reference-to-Video Generation. \newblock arXiv:2609.22069, 2026. \url{https://arxiv.org/abs/2609.22069}
+\bibitem{huang2024vbench}
+Z. Huang et al. \newblock VBench: Comprehensive Benchmark Suite for Video Generative Models. \newblock CVPR, 2024. \url{https://openaccess.thecvf.com/content/CVPR2024/html/Huang_VBench_Comprehensive_Benchmark_Suite_for_Video_Generative_Models_CVPR_2024_paper.html}
+\bibitem{liu2024evalcrafter}
+Y. Liu et al. \newblock EvalCrafter: Benchmarking and Evaluating Large Video Generation Models. \newblock CVPR, 2024. \url{https://evalcrafter.github.io/}
+\bibitem{han2025videobench}
+H. Han et al. \newblock Video-Bench: Human-Aligned Video Generation Benchmark. \newblock CVPR, pp. 18858--18868, 2025. \url{https://openaccess.thecvf.com/content/CVPR2025/html/Han_Video-Bench_Human-Aligned_Video_Generation_Benchmark_CVPR_2025_paper.html}
+\bibitem{safavigerdini2026survey}
+K. Safavigerdini, B. K. Hatuwal, A. Daghighi, and K. Palaniappan. \newblock Generative AI Video Evaluation: Survey of Metrics, Benchmarks, and Trustworthiness. \newblock CVPR Workshops, 2026, pp. 5189--5200. \url{https://openaccess.thecvf.com/content/CVPR2026W/VGBE/html/Safavigerdini_Generative_AI_Video_Evaluation_Survey_of_Metrics_Benchmarks_and_Trustworthiness_CVPRW_2026_paper.html}
+\bibitem{toyotaTPS}
+Toyota Motor Corporation. \newblock Toyota Production System: Vision and Philosophy. \url{https://global.toyota/en/company/vision-and-philosophy/production-system/}
+\end{thebibliography}
+\end{document}
