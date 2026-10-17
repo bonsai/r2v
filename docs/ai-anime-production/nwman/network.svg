@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="820" viewBox="0 0 1200 820" role="img" aria-labelledby="title desc">
+<title id="title">nwman LAN-only production network</title>
+<desc id="desc">Private LAN network split into studio, control, worker and data planes, with optional controlled egress and Kubernetes-ready service boundaries.</desc>
+<defs><marker id="arrow" markerWidth="9" markerHeight="9" refX="7" refY="3" orient="auto"><path d="M0,0 L0,6 L8,3 z" fill="#334155"/></marker><style>
+.title{font:700 25px sans-serif;fill:#0f172a}.head{font:700 17px sans-serif;fill:#0f172a}.body{font:14px sans-serif;fill:#1e293b}.small{font:12px sans-serif;fill:#334155}.node{stroke:#475569;stroke-width:1.5;rx:12}.edge{stroke:#334155;stroke-width:2;fill:none;marker-end:url(#arrow)}.optional{stroke:#b45309;stroke-width:2;stroke-dasharray:7 5;fill:none;marker-end:url(#arrow)}
+</style></defs>
+<rect width="1200" height="820" fill="#fff"/>
+<text x="35" y="42" class="title">nwman — LAN-only AI anime production network</text>
+<text x="35" y="68" class="small">Private network · no public ingress · default-deny worker egress · Kubernetes is future-ready, not an MVP dependency</text>
+<rect x="25" y="95" width="1150" height="575" fill="#f8fafc" stroke="#64748b" stroke-width="2" rx="18"/>
+<text x="45" y="125" class="head">LAN / Private Network</text>
+<rect x="45" y="150" width="250" height="170" fill="#e0f2fe" class="node"/><text x="65" y="180" class="head">Studio zone</text>
+<rect x="65" y="198" width="205" height="35" fill="#fff" class="node"/><text x="167" y="220" text-anchor="middle" class="body">制作端末 / Review UI</text>
+<rect x="65" y="247" width="205" height="35" fill="#fff" class="node"/><text x="167" y="269" text-anchor="middle" class="body">管理端末</text>
+<rect x="335" y="150" width="275" height="170" fill="#dbeafe" class="node"/><text x="355" y="180" class="head">Control plane</text>
+<rect x="355" y="198" width="105" height="35" fill="#fff" class="node"/><text x="407" y="220" text-anchor="middle" class="small">Job API</text>
+<rect x="480" y="198" width="110" height="35" fill="#fff" class="node"/><text x="535" y="220" text-anchor="middle" class="small">Auth / RBAC</text>
+<rect x="355" y="247" width="105" height="35" fill="#fff" class="node"/><text x="407" y="269" text-anchor="middle" class="small">Job Queue</text>
+<rect x="480" y="247" width="110" height="35" fill="#fff" class="node"/><text x="535" y="269" text-anchor="middle" class="small">DNS / Metrics</text>
+<rect x="650" y="150" width="250" height="170" fill="#dcfce7" class="node"/><text x="670" y="180" class="head">Worker plane</text>
+<rect x="670" y="198" width="210" height="35" fill="#fff" class="node"/><text x="775" y="220" text-anchor="middle" class="body">R2V generation</text>
+<rect x="670" y="247" width="210" height="35" fill="#fff" class="node"/><text x="775" y="269" text-anchor="middle" class="body">JEV evaluation / post-process</text>
+<rect x="940" y="150" width="210" height="170" fill="#fef3c7" class="node"/><text x="960" y="180" class="head">Data plane</text>
+<rect x="960" y="198" width="170" height="35" fill="#fff" class="node"/><text x="1045" y="220" text-anchor="middle" class="small">Object storage</text>
+<rect x="960" y="247" width="170" height="35" fill="#fff" class="node"/><text x="1045" y="269" text-anchor="middle" class="small">Metadata DB / RAG</text>
+<path d="M295 220 H329" class="edge"/><path d="M610 220 H644" class="edge"/><path d="M900 220 H934" class="edge"/><path d="M610 264 H644" class="edge"/><path d="M900 264 H934" class="edge"/>
+<rect x="65" y="380" width="1080" height="225" fill="#fff" stroke="#94a3b8" stroke-dasharray="7 5" rx="14"/>
+<text x="85" y="412" class="head">Kubernetes-ready boundary (future)</text>
+<text x="85" y="445" class="body">Studio / Control / Workers / Data / Observability namespaces</text>
+<text x="85" y="477" class="body">Service + internal DNS · Job/Deployment · PVC or external storage</text>
+<text x="85" y="509" class="body">NetworkPolicy · RBAC/ServiceAccount · Secret manager · resource quotas</text>
+<text x="85" y="551" class="small">Keep APIs and job contracts stable; start with a simpler LAN deployment and migrate only when operational needs justify it.</text>
+<rect x="190" y="710" width="340" height="72" fill="#ffedd5" class="node"/><text x="210" y="738" class="head">Controlled egress gateway</text><text x="210" y="760" class="small">Allowlist · checksum · license / source record</text>
+<rect x="710" y="710" width="300" height="72" fill="#fef3c7" class="node"/><text x="730" y="738" class="head">Approved model / data sources</text><text x="730" y="760" class="small">Only explicit admin download jobs</text>
+<path d="M270 282 C270 650 360 650 360 704" class="optional"/><path d="M530 746 H704" class="optional"/>
+</svg>
