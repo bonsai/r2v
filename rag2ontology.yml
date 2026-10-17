@@ -1,0 +1,164 @@
+schema_version: "1.0"
+id: bonsai.r2v.rag2ontology
+name: RAG-to-Ontology Mapping
+status: specification
+purpose: Map R2V papers, extracted passages, search results, and reviewed answers to the core ontology.
+source_ontology: ontology.yml
+pipeline:
+  manifest: rag/papers.yml
+  implementation: rag/r2v_rag.py
+  index: SQLite FTS5
+  provenance_fields:
+    - paper_id
+    - arxiv_id
+    - source_url
+    - page
+    - chunk_index
+  rules:
+    - Every extracted passage must retain source paper and page metadata.
+    - Search ranking scores are not confidence scores.
+    - Retrieved text is evidence, not automatically verified fact.
+    - Do not invent authors, methods, metrics, datasets, or results.
+    - Keep unverified claims explicitly marked.
+    - Check redistribution terms before publishing full-text-derived data.
+mappings:
+  paper:
+    source: rag/papers.yml
+    concept: Paper
+    id: "paper.{paper_id}"
+    fields:
+      paper_id: id
+      title: title
+      arxiv_id: arxiv_id
+      paper_url: url
+    verification_status: needs_full_text_review
+  passage:
+    source: "SQLite chunks table"
+    concept: EvidencePassage
+    id: "evidence.{paper_id}.p{page}.c{chunk_index}"
+    fields:
+      text: text
+      source_url: source_url
+      page: page
+      chunk_index: chunk_index
+    relations:
+      extracted_from: "paper.{paper_id}"
+    verification_status: unverified
+  retrieval:
+    source: "SQLite FTS5 result"
+    concept: EvidenceReference
+    fields:
+      paper_id: paper_id
+      source_url: source_url
+      page: page
+      chunk_index: chunk_index
+      retrieval_score: score
+    note: retrieval_score ranks matches and must not be interpreted as factual confidence.
+  reviewed_claim:
+    source: human_review
+    concept: Claim
+    required_fields:
+      - statement
+      - evidence_url
+      - evidence_location
+      - confidence
+      - verification_status
+    relations:
+      supported_by: [Paper, EvidencePassage]
+      contradicts: Claim
+  answer:
+    source: generated_or_curated_answer
+    concept: ResearchAnswer
+    required_fields:
+      - answer_text
+      - verification_status
+    relations:
+      answers: ResearchQuestion
+      cites_evidence: EvidenceReference
+    validation:
+      require_source_url: true
+      require_page_number: true
+      label_unverified_statements: true
+ontology_extensions:
+  concepts:
+    EvidencePassage:
+      description: A text passage extracted from a paper with source location metadata.
+      properties:
+        id: string
+        paper_id: string
+        text: string
+        source_url: uri
+        page: integer
+        chunk_index: integer
+        verification_status: enum
+      relations: [extracted_from, supports]
+    EvidenceReference:
+      description: A retrieved reference to a paper passage.
+      properties:
+        id: string
+        paper_id: string
+        source_url: uri
+        page: integer
+        chunk_index: integer
+        retrieval_score: number
+      relations: [cites]
+    ResearchQuestion:
+      description: A question asked against the research corpus.
+      properties:
+        id: string
+        question: string
+      relations: [answered_by, asks_about]
+    ResearchAnswer:
+      description: An answer supported by retrieved evidence.
+      properties:
+        id: string
+        answer_text: string
+        verification_status: enum
+      relations: [answers, cites_evidence]
+  relations:
+    extracted_from:
+      domain: EvidencePassage
+      range: Paper
+    supports:
+      domain: EvidencePassage
+      range: Claim
+    cites:
+      domain: EvidenceReference
+      range: Paper
+    asks_about:
+      domain: ResearchQuestion
+      range: [Paper, Method, Dataset, Benchmark, Metric, ControlFactor, FailureMode]
+    answered_by:
+      domain: ResearchQuestion
+      range: ResearchAnswer
+    answers:
+      domain: ResearchAnswer
+      range: ResearchQuestion
+    cites_evidence:
+      domain: ResearchAnswer
+      range: EvidenceReference
+instance_output:
+  format: YAML
+  suggested_files:
+    - instances/papers.yml
+    - instances/evidence_passages.yml
+    - instances/claims.yml
+    - instances/questions_and_answers.yml
+  stable_ids: true
+  provenance_required: true
+  deduplicate_by:
+    - paper_id
+    - page
+    - normalized_text_hash
+workflow:
+  - extract_page_aware_text
+  - split_into_chunks
+  - index_with_source_metadata
+  - retrieve_evidence
+  - map_to_ontology
+  - verify_claims_against_source
+  - publish_after_license_review
+open_questions:
+  - Promote EvidencePassage and ResearchAnswer into ontology.yml?
+  - Add embeddings alongside SQLite FTS5?
+  - Export instances as YAML, JSON-LD, RDF/Turtle, or multiple formats?
