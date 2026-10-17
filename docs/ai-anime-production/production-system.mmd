@@ -1,0 +1,21 @@
+flowchart TD
+    REF["REFERENCE<br/>Canon / YAML / Story / Character / World"]
+    STICK["Stick Figure<br/>Pose / Center of Gravity / Timing"]
+    GEN["GENERATION<br/>Model + LoRA + ML Adapter"]
+    JEV["JEV / EVAL<br/>Proposition + Evidence + Rubric"]
+    TPS["PRODUCTION SYSTEM<br/>TPS / GATE"]
+    OUT["Accepted Shots / Finished Film"]
+    FIX["Failure Analysis<br/>Cause + Revision Route"]
+
+    REF --> STICK
+    REF --> GEN
+    STICK --> GEN
+    GEN -->|"Candidate + Run Record"| JEV
+    JEV -->|"PASS"| TPS
+    JEV -->|"REVISE / REJECT"| FIX
+    FIX -->|"Canon issue"| REF
+    FIX -->|"Pose / motion issue"| STICK
+    FIX -->|"Generation / adapter issue"| GEN
+    FIX -->|"Rubric issue"| JEV
+    TPS -->|"Gate A-D passed"| OUT
+    TPS -. "Yield / Rework / Cost" .-> JEV
