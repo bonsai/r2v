@@ -7,6 +7,8 @@ on:
     paths:
       - "rag/**"
       - "site/**"
+      - "papers.yaml"
+      - "docs/ai-anime-production/**"
       - ".github/workflows/rag.yml"
   schedule:
     - cron: "23 3 * * 1"
@@ -44,11 +46,33 @@ jobs:
       - name: Download papers and build full-text index
         run: python rag/r2v_rag.py ingest --download
 
-      - name: Smoke-test retrieval
+      - name: Build project knowledge RAG2 database
+        run: |
+          python rag/build_rag2.py
+          test -s rag/data/rag2.db
+
+      - name: Smoke-test paper retrieval
         run: |
           python rag/r2v_rag.py ask "reference identity consistency evaluation" --limit 6 | tee rag-smoke-test.txt
           test -s rag-smoke-test.txt
           grep -q "arXiv:" rag-smoke-test.txt
+
+      - name: Smoke-test project RAG2 database
+        run: |
+          python - <<'PY'
+          import sqlite3
+          db = sqlite3.connect("rag/data/rag2.db")
+          docs = db.execute("SELECT count(*) FROM documents").fetchone()[0]
+          chunks = db.execute("SELECT count(*) FROM chunks").fetchone()[0]
+          assert docs > 0 and chunks > 0, (docs, chunks)
+          hits = db.execute(
+              "SELECT title FROM chunks_fts WHERE chunks_fts MATCH ? LIMIT 5",
+              ("JEV OR TPS OR R2V",)
+          ).fetchall()
+          assert hits, "RAG2 FTS smoke test returned no hits"
+          print(f"RAG2 OK: {docs} documents, {chunks} chunks")
+          db.close()
+          PY
 
       - name: Prepare GitHub Pages site
         env:
@@ -56,6 +80,7 @@ jobs:
         run: |
           mkdir -p site/data
           cp rag/data/r2v_rag.sqlite3 site/data/r2v_rag.sqlite3
+          cp rag/data/rag2.db site/data/rag2.db
           python - <<'PY'
           import datetime, json, os
           from pathlib import Path
@@ -63,7 +88,8 @@ jobs:
               "built_at": datetime.datetime.now(datetime.timezone.utc).isoformat(timespec="seconds"),
               "commit": os.environ["COMMIT_SHA"][:7],
               "papers": 3,
-              "database": "r2v_rag.sqlite3"
+              "databases": ["r2v_rag.sqlite3", "rag2.db"],
+              "rag2_scope": "papers.yaml metadata and project research documents; not full paper PDF text"
           }
           Path("site/data/build-info.json").write_text(
               json.dumps(payload, ensure_ascii=False, indent=2) + "\n",
@@ -72,13 +98,15 @@ jobs:
           PY
           test -s site/index.html
           test -s site/data/r2v_rag.sqlite3
+          test -s site/data/rag2.db
 
-      - name: Upload RAG database artifact
+      - name: Upload RAG database artifacts
         uses: actions/upload-artifact@v4
         with:
           name: r2v-rag-index-${{ github.run_id }}
           path: |
             rag/data/r2v_rag.sqlite3
+            rag/data/rag2.db
             rag-smoke-test.txt
           if-no-files-found: error
           retention-days: 14
