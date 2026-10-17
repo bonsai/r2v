@@ -1,0 +1,62 @@
+@startuml
+title AIアニメ映画制作システム
+Stick Figure / YAML / JEV / LoRA / ML Adapter
+left to right direction
+skinparam packageStyle rectangle
+skinparam shadowing false
+
+package "REFERENCE / CANON" as REF {
+  artifact "YAML
+Scene spec / constraints" as YAML
+  artifact "Story / Character / World" as CANON
+  artifact "Stick figure / Storyboard" as STICK
+  database "RAG
+Retrieval index" as RAG
+}
+component "GENERATION
+Model + LoRA + ML Adapter
+Prompt + parameters + run record" as GEN
+component "JEV / EVAL
+Proposition + Evidence + Rubric
+Score + Confidence + Verdict" as JEV
+package "PRODUCTION SYSTEM / TPS-GATE" as TPS {
+  usecase "Gate A
+Spec readiness" as A
+  usecase "Gate B
+Asset inspection" as B
+  usecase "Gate C
+Shot continuity" as C
+  usecase "Gate D
+Delivery inspection" as D
+  A --> B
+  B --> C
+  C --> D
+}
+artifact "Accepted shots / Finished film" as OUT
+component "Failure analysis
+revision routing" as FIX
+
+YAML --> GEN
+CANON --> GEN
+STICK --> GEN : pose / timing
+RAG ..> REF : retrieval only
+GEN --> JEV : candidate + provenance
+JEV --> TPS : PASS
+JEV --> FIX : REVISE / REJECT
+FIX --> STICK : motion issue
+FIX --> CANON : canon issue
+FIX --> GEN : generation issue
+FIX --> JEV : rubric / evidence issue
+TPS --> OUT : gates passed
+TPS ..> JEV : KPI feedback
+
+note bottom of GEN
+  LoRA: model specialization
+  ML adapter: broader conditioning/control
+  Treat and test separately.
+end note
+note bottom of JEV
+  Verify automated judgments against
+  sampled human review.
+end note
+@enduml
