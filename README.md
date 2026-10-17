@@ -48,7 +48,9 @@ Research notes for Reference-to-Video (R2V) generation: generating a video that 
 
 - [papers.yaml](papers.yaml) — structured paper catalog and review fields.
 - [Survey and ablation plan](docs/ai-anime-production/survey-and-ablation.md) — use literature to decide what to include and what to remove.
-- [LaTeX proposal](docs/ai-anime-production/paper-proposal.tex) — staged experiment and paper outline.
+- [Survey paper draft (LaTeX)](docs/ai-anime-production/survey-paper.tex) — literature synthesis first
+- [Funding research plan (LaTeX)](docs/ai-anime-production/research-plan-funding.tex) — scoped 6-month plan and draft budget
+- [Earlier technical proposal (LaTeX)](docs/ai-anime-production/paper-proposal.tex) — staged experiment and paper outline.
 
 The catalog is a seed list, not an exhaustive or fully verified systematic survey. Verify bibliographic metadata, paper contents, model availability, licenses, inference requirements, and reproducibility from primary sources before making claims.
 
