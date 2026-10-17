@@ -76,3 +76,14 @@ python rag/r2v_rag.py ask "How do the papers handle identity consistency?"
 ```
 
 The PDFs, extracted chunks, and SQLite index stay local and are excluded from Git. Retrieval returns source paper, arXiv URL, and PDF page for every chunk. See [the RAG README](rag/README.md) for optional LLM generation and licensing notes.
+
+
+## Published RAG database
+
+The GitHub Actions workflow rebuilds the SQLite index and publishes the site and database to GitHub Pages:
+
+- Site: https://bonsai.github.io/r2v/
+- Download database: https://bonsai.github.io/r2v/data/r2v_rag.sqlite3
+- Workflow: [Build and publish R2V paper RAG](.github/workflows/rag.yml)
+
+The published SQLite database contains extracted full-text chunks. Before making the site public, verify the license and redistribution terms for all three papers. If the repo's Pages settings do not use **GitHub Actions** as the build/deploy source, configure Settings → Pages → Build and deployment → Source: GitHub Actions.
