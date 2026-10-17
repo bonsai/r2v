@@ -1,0 +1,95 @@
+schema_version: "1.0"
+id: bonsai.r2v.ontology2graph
+name: Ontology to Graph Mapping
+status: specification
+purpose: Convert ontology concepts, relation definitions, and research records into a deterministic property-graph YAML document.
+inputs:
+  - ontology.yml
+  - rag2ontology.yml
+  - instances/**/*.yml
+output:
+  format: YAML
+  default_path: graph/r2v.graph.yml
+  schema:
+    graph:
+      id: string
+      directed: boolean
+      nodes: list
+      edges: list
+      metadata: object
+mapping:
+  concepts_to_nodes:
+    enabled: true
+    node_id: "concept:{concept_name}"
+    node_type: OntologyConcept
+    properties:
+      name: concept_name
+      description: concept.description
+  relations_to_edges:
+    enabled: true
+    edge_id: "relation:{relation_name}"
+    edge_type: OntologyRelation
+    properties:
+      name: relation_name
+      domain: relation.domain
+      range: relation.range
+  research_records_to_nodes:
+    enabled: true
+    node_id: record.id
+    node_type: record.type
+    properties:
+      copy_defined_record_fields: true
+      preserve_nested_objects: true
+      mark_unverified: true
+  instances_to_nodes:
+    enabled: true
+    node_id: instance.id
+    node_type: instance.type
+    properties:
+      copy_defined_instance_fields: true
+      preserve_provenance: true
+  instance_relations_to_edges:
+    enabled: true
+    edge_id: "{source_id}--{relation}--{target_id}"
+    source: relation subject
+    type: relation name
+    target: relation object
+    properties:
+      preserve_source_location: true
+      preserve_verification_status: true
+validation:
+  - Every node has a stable id and type.
+  - Every edge has a stable id, source, type, and target.
+  - Every edge endpoint must exist as a node or be reported as an unresolved reference.
+  - Do not invent instance relationships from concept-level domain/range declarations.
+  - Expand domain and range lists into allowed-type metadata, not individual data edges.
+  - Keep unverified records marked; graph conversion does not verify claims.
+  - Preserve original IDs where available.
+normalization:
+  ids: trim_only
+  missing_values: omit
+  lists: preserve_order
+  duplicate_nodes: merge_only_if_same_id_and_type
+  conflicting_duplicates: report_error
+  unresolved_references: report_warning
+graph_conventions:
+  node_fields:
+    - id
+    - type
+    - label
+    - properties
+  edge_fields:
+    - id
+    - source
+    - type
+    - target
+    - properties
+  metadata_fields:
+    - source_files
+    - generated_at
+    - warnings
+    - ontology_version
+outputs:
+  - graph/r2v.graph.yml
+  - graph/r2v.graph.json
+  - graph/unresolved-references.yml
