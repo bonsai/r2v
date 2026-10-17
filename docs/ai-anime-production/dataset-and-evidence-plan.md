@@ -72,13 +72,12 @@
 
 ## 結果表の列
 
-| condition | n | pose_match | identity_consistency | temporal_continuity | JEV-human_agreement | first_pass_yield | rework_rate | cost_per_accepted_shot |
-|---|---:|---:|---:|---:|---:|---:|---:|---:|
-| baseline | — | 未測定 | 未測定 | 未測定 | 未測定 | 未測定 | 未測定 | 未測定 |
-| + YAML | — | 未測定 | 未測定 | 未測定 | 未測定 | 未測定 | 未測定 | 未測定 |
-| + stick figure | — | 未測定 | 未測定 | 未測定 | 未測定 | 未測定 | 未測定 | 未測定 |
-| + LoRA | — | 未測定 | 未測定 | 未測定 | 未測定 | 未測定 | 未測定 | 未測定 |
-| + adapter | — | 未測定 | 未測定 | 未測定 | 未測定 | 未測定 | 未測定 | 未測定 |
-| + JEV/TPS loop | — | 未測定 | 未測定 | 未測定 | 未測定 | 未測定 | 未測定 | 未測定 |
+| condition | change | n | pose_match | human-JEV agreement | first_pass_yield | rework_rate | human_review_minutes | cost_per_accepted_shot |
+|---|---|---:|---:|---:|---:|---:|---:|---:|
+| A baseline | R2V standard generation | — | 未測定 | — | 未測定 | 未測定 | 未測定 | 未測定 |
+| B pose control | A + stick-figure/pose control | — | 未測定 | — | 未測定 | 未測定 | 未測定 | 未測定 |
+| C JEV loop | B + evidence-based JEV review and repair | — | 未測定 | 未測定 | 未測定 | 未測定 | 未測定 | 未測定 |
+
+LoRA、追加adapter、TPS Gateはこの初期表に混ぜず、後続実験の候補として別に事前登録する。YAMLは全条件共通の記録基盤。
 
 「未測定」は空欄の代わりに明示して、計画値と実測値を混同しない。
