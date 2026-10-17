@@ -55,7 +55,9 @@ YAMLは全条件共通の記録・再現基盤とし、その効果は初期実�
 - [論文構成案](./paper-outline.md)
 - [課題画像・ショット選定と実証データ計画](./dataset-and-evidence-plan.md)
 - [Kaggle実験プロトコル](./kaggle-experiment-protocol.md)
-- [論文企画書（LaTeX）](./paper-proposal.tex)
+- [サーベイ論文草稿（LaTeX）](./survey-paper.tex) — 先行研究を整理する第一成果物
+- [研究計画書・予算案（LaTeX）](./research-plan-funding.tex) — 6か月案、概算100万円の直接経費枠
+- [技術提案書（旧草稿）](./paper-proposal.tex)
 - [参考文献データベース（BibTeX）](./references.bib)
 - [文献サーベイ・構成要素除外の設計](./survey-and-ablation.md)
 
