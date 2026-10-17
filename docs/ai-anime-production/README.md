@@ -48,3 +48,10 @@
 ## 研究仮説の全体像
 
 [仮説：Software Factory × R2V × TPS × ML/Kaggle](./hypothesis.md) に、着想、オールスター構成のリスク、要素ごとの役割、段階的PoC、評価指標、反証条件を記録しています。
+
+
+## 研究計画と論文
+
+- [論文構成案](./paper-outline.md)
+- [課題画像・ショット選定と実証データ計画](./dataset-and-evidence-plan.md)
+- [Kaggle実験プロトコル](./kaggle-experiment-protocol.md)
