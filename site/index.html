@@ -3,8 +3,8 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="Reference-to-Video research: searchable paper RAG index and source links.">
-  <title>R2V Paper RAG</title>
+  <meta name="description" content="Reference-to-Video research map, keyword cloud, graph and paper recommendations.">\n  <link rel="stylesheet" href="./graph.css">
+  <title>R2V Research Map</title>
   <style>
     :root { color-scheme: light dark; --line: #8885; --muted: #888; }
     body { max-width: 860px; margin: 0 auto; padding: 2rem 1.2rem 4rem; font: 16px/1.65 system-ui, sans-serif; }
@@ -22,6 +22,19 @@
     <h1>Reference-to-Video Paper RAG</h1>
     <p>3本のR2V論文を対象に、GitHub Actionsで全文抽出・索引作成した研究用データベース。</p>
   </header>
+
+  <section class="card research-map">
+    <h2>研究キーワード・グラフ</h2>
+    <p>タグの重みは起点論文と候補論文のテーマ接続から作った探索用ヒューリスティックです。研究の重要度を証明するスコアではありません。</p>
+    <div class="map-controls"><input id="map-search" type="search" placeholder="キーワード・論文を検索…" aria-label="キーワード・論文を検索"><button id="clear-map" type="button">絞り込み解除</button><span id="result-count" class="muted">読み込み中…</span></div>
+    <div id="tag-cloud" aria-label="キーワードタグクラウド"></div>
+    <p id="map-detail" aria-live="polite" class="map-note">研究マップを読み込み中…</p>
+    <div class="graph-wrap"><svg id="research-graph" role="img" aria-label="論文と研究キーワードの関係グラフ"></svg></div>
+    <h2>読むべき論文候補</h2>
+    <p class="map-note">起点の3本に加えて、テーマの接続から選んだ候補。タグで絞り込んで探索できます。</p>
+    <div id="paper-list"></div>
+    <p class="map-note">探索仮説：identity consistency、multi-reference control、representation alignment、factor-grounded evaluation から、multi-view、multi-subject、training-free、positional encoding、keyframe editing、data construction に広げています。候補は原著を読む前の仮説です。</p>
+  </section>
 
   <section class="card">
     <h2>最新の索引データ</h2>
@@ -49,6 +62,7 @@
     <p>索引は自動更新されます。DBは研究支援用で、抽出品質や引用ページを原著PDFで確認してください。</p>
     <p><a href="https://github.com/bonsai/r2v">GitHub repository</a> · <a href="https://github.com/bonsai/r2v/actions">Workflow runs</a></p>
   </footer>
+  <script src="./graph.js" defer></script>
   <script>
     fetch('./data/build-info.json', { cache: 'no-store' })
       .then(r => { if (!r.ok) throw new Error('not found'); return r.json(); })
